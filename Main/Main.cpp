@@ -6,8 +6,16 @@
 #include "Options/ArrayPrinter.h"
 
 int main() {
-    const int size = 5;
-    int originalArray[size] = {10, 5, 7, 3, 8};
+    int size;
+    std::cout << "Podaj rozmiar tablicy: ";
+    std::cin >> size;
+
+    int* originalArray = new int[size]; // Alokacja dynamiczna tablicy
+
+    std::cout << "Podaj elementy tablicy:" << std::endl;
+    for (int i = 0; i < size; ++i) {
+        std::cin >> originalArray[i];
+    }
 
     InsertionSort insertionSorter;
     HeapSort heapSorter;
@@ -34,7 +42,7 @@ int main() {
             case 1:
                 do {
                     // Tworzymy nową tablicę dla sortowania
-                    int dynamicArray[size];
+                    int* dynamicArray = new int[size];
                     for (int i = 0; i < size; ++i) {
                         dynamicArray[i] = originalArray[i];
                     }
@@ -60,6 +68,7 @@ int main() {
                             innerLoop = true;
                             break;
                         case 4:
+                            delete[] dynamicArray; // Zwolnienie pamięci
                             return 0;
                         default:
                             std::cout << "Nieprawidlowa opcja. Wybierz opcje od 1 do 4." << std::endl;
@@ -69,10 +78,10 @@ int main() {
                 break;
             case 2:
                 do {
-                    // Tworzymy nową tablicę dla sortowania przez kopcowanie
-                    int heapArray[size];
+                    // Tworzymy nową tablicę dla sortowania
+                    int* dynamicArray = new int[size];
                     for (int i = 0; i < size; ++i) {
-                        heapArray[i] = originalArray[i];
+                        dynamicArray[i] = originalArray[i];
                     }
 
                     std::cout << "\n\nMENU - sortowanie przez kopcowanie" << std::endl;
@@ -88,14 +97,15 @@ int main() {
                             ArrayPrinter::print(originalArray, size);
                             break;
                         case 2:
-                            heapSorter.sort(heapArray, size);
+                            heapSorter.sort(dynamicArray, size);
                             std::cout << "\n\nTablica zostala posortowana przez HeapSort." << std::endl;
-                            ArrayPrinter::print(heapArray, size);
+                            ArrayPrinter::print(dynamicArray, size);
                             break;
                         case 3:
                             innerLoop = true;
                             break;
                         case 4:
+                            delete[] dynamicArray; // Zwolnienie pamięci
                             return 0;
                         default:
                             std::cout << "Nieprawidlowa opcja. Wybierz opcje od 1 do 4." << std::endl;
@@ -106,9 +116,9 @@ int main() {
             case 3:
                 do {
                     // Tworzymy nową tablicę dla sortowania
-                    int shellArray[size];
+                    int* dynamicArray = new int[size];
                     for (int i = 0; i < size; ++i) {
-                        shellArray[i] = originalArray[i];
+                        dynamicArray[i] = originalArray[i];
                     }
 
                     std::cout << "\n\nMENU - sortowanie Shella" << std::endl;
@@ -125,19 +135,20 @@ int main() {
                             ArrayPrinter::print(originalArray, size);
                             break;
                         case 2:
-                            shellSorter.sortWithKnuth(shellArray, size);
+                            shellSorter.sortWithKnuth(dynamicArray, size);
                             std::cout << "\n\nTablica zostala posortowana przez ShellSort (Knuth)." << std::endl;
-                            ArrayPrinter::print(shellArray, size);
+                            ArrayPrinter::print(dynamicArray, size);
                             break;
                         case 3:
-                            shellSorter.sortWithSedgewick(shellArray, size);
+                            shellSorter.sortWithSedgewick(dynamicArray, size);
                             std::cout << "\n\nTablica zostala posortowana przez ShellSort (Sedgewick)." << std::endl;
-                            ArrayPrinter::print(shellArray, size);
+                            ArrayPrinter::print(dynamicArray, size);
                             break;
                         case 4:
                             innerLoop = true;
                             break;
                         case 5:
+                            delete[] dynamicArray; // Zwolnienie pamięci
                             return 0;
                         default:
                             std::cout << "Nieprawidlowa opcja. Wybierz opcje od 1 do 5." << std::endl;
@@ -148,9 +159,9 @@ int main() {
             case 4:
                 do {
                     // Tworzymy nową tablicę dla sortowania
-                    int quickArray[size];
+                    int* dynamicArray = new int[size];
                     for (int i = 0; i < size; ++i) {
-                        quickArray[i] = originalArray[i];
+                        dynamicArray[i] = originalArray[i];
                     }
 
                     std::cout << "\n\nMENU - sortowanie szybkie" << std::endl;
@@ -169,29 +180,30 @@ int main() {
                             ArrayPrinter::print(originalArray, size);
                             break;
                         case 2:
-                            quickSorter.sort(quickArray, size, 1); // Skrajny lewy pivot
+                            quickSorter.sort(dynamicArray, size, 1); // Skrajny lewy pivot
                             std::cout << "\n\nTablica zostala posortowana przez QuickSort (skrajny lewy pivot)." << std::endl;
-                            ArrayPrinter::print(quickArray, size);
+                            ArrayPrinter::print(dynamicArray, size);
                             break;
                         case 3:
-                            quickSorter.sort(quickArray, size, 2); // Skrajny prawy pivot
+                            quickSorter.sort(dynamicArray, size, 2); // Skrajny prawy pivot
                             std::cout << "\n\nTablica zostala posortowana przez QuickSort (skrajny prawy pivot)." << std::endl;
-                            ArrayPrinter::print(quickArray, size);
+                            ArrayPrinter::print(dynamicArray, size);
                             break;
                         case 4:
-                            quickSorter.sort(quickArray, size, 3); // Środkowy pivot
+                            quickSorter.sort(dynamicArray, size, 3); // Środkowy pivot
                             std::cout << "\n\nTablica zostala posortowana przez QuickSort (srodkowy pivot)." << std::endl;
-                            ArrayPrinter::print(quickArray, size);
+                            ArrayPrinter::print(dynamicArray, size);
                             break;
                         case 5:
-                            quickSorter.sort(quickArray, size, 4); // Losowy pivot
+                            quickSorter.sort(dynamicArray, size, 4); // Losowy pivot
                             std::cout << "\n\nTablica zostala posortowana przez QuickSort (losowy pivot)." << std::endl;
-                            ArrayPrinter::print(quickArray, size);
+                            ArrayPrinter::print(dynamicArray, size);
                             break;
                         case 6:
                             innerLoop = true;
                             break;
                         case 7:
+                            delete[] dynamicArray; // Zwolnienie pamięci
                             return 0;
                         default:
                             std::cout << "Nieprawidlowa opcja. Wybierz opcje od 1 do 7." << std::endl;
