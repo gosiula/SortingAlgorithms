@@ -1,7 +1,14 @@
 #include <iostream>
-#include "ShellSort.h"
 
-void ShellSort::sortWithKnuth(int arr[], int n) {
+template<typename T>
+class ShellSort {
+public:
+    void sortWithKnuth(T arr[], int n);
+    void sortWithSedgewick(T arr[], int n);
+};
+
+template<typename T>
+void ShellSort<T>::sortWithKnuth(T arr[], int n) {
     int h = 1;
     while (h < n / 3) {
         h = 3 * h + 1;
@@ -16,14 +23,15 @@ void ShellSort::sortWithKnuth(int arr[], int n) {
     }
 }
 
-void ShellSort::sortWithSedgewick(int arr[], int n) {
+template<typename T>
+void ShellSort<T>::sortWithSedgewick(T arr[], int n) {
     int gaps[] = {1750, 701, 301, 132, 57, 23, 10, 4, 1};
     int gapsSize = sizeof(gaps) / sizeof(gaps[0]);
 
     for (int gapIndex = 0; gapIndex < gapsSize; gapIndex++) {
         int gap = gaps[gapIndex];
         for (int i = gap; i < n; i++) {
-            int temp = arr[i];
+            T temp = arr[i];
             int j;
             for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
                 arr[j] = arr[j - gap];
@@ -32,3 +40,4 @@ void ShellSort::sortWithSedgewick(int arr[], int n) {
         }
     }
 }
+

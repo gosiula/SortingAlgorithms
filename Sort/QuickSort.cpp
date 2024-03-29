@@ -1,15 +1,25 @@
 #include <iostream>
-#include "QuickSort.h"
-#include <cstdlib> // Dla funkcji rand()
+#include <cstdlib> // Dodaj ten nagłówek
 
-void QuickSort::sort(int arr[], int n, int pivotChoice) {
+template<typename T>
+class QuickSort {
+public:
+    void sort(T arr[], int n, int pivotChoice);
+private:
+    void quickSort(T arr[], int low, int high, int pivotChoice);
+    int choosePivot(T arr[], int low, int high, int pivotChoice);
+};
+
+template<typename T>
+void QuickSort<T>::sort(T arr[], int n, int pivotChoice) {
     quickSort(arr, 0, n - 1, pivotChoice);
 }
 
-void QuickSort::quickSort(int arr[], int low, int high, int pivotChoice) {
+template<typename T>
+void QuickSort<T>::quickSort(T arr[], int low, int high, int pivotChoice) {
     if (low < high) {
         int pivotIndex = choosePivot(arr, low, high, pivotChoice);
-        int pivotValue = arr[pivotIndex];
+        T pivotValue = arr[pivotIndex];
 
         // Przenoszenie elementów mniejszych od pivota do lewej strony i większych do prawej strony
         int i = low;
@@ -34,7 +44,8 @@ void QuickSort::quickSort(int arr[], int low, int high, int pivotChoice) {
     }
 }
 
-int QuickSort::choosePivot(int arr[], int low, int high, int pivotChoice) {
+template<typename T>
+int QuickSort<T>::choosePivot(T arr[], int low, int high, int pivotChoice) {
     // Wybór pivota zgodnie z wybraną metodą
     switch (pivotChoice) {
         case 1: // Skrajny lewy

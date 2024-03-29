@@ -1,7 +1,15 @@
 #include <iostream>
-#include "Sort\HeapSort.h"
 
-void HeapSort::sort(int arr[], int size) {
+template<typename T>
+class HeapSort {
+public:
+    void sort(T arr[], int size);
+private:
+    void heapify(T arr[], int size, int i);
+};
+
+template<typename T>
+void HeapSort<T>::sort(T arr[], int size) {
     // Budowa kopca (Heapify)
     for (int i = size / 2 - 1; i >= 0; --i) {
         heapify(arr, size, i);
@@ -14,7 +22,8 @@ void HeapSort::sort(int arr[], int size) {
     }
 }
 
-void HeapSort::heapify(int arr[], int size, int i) {
+template<typename T>
+void HeapSort<T>::heapify(T arr[], int size, int i) {
     int largest = i; // Inicjalizacja największego elementu jako korzenia
     int left = 2 * i + 1; // Indeks lewego dziecka
     int right = 2 * i + 2; // Indeks prawego dziecka
@@ -37,3 +46,5 @@ void HeapSort::heapify(int arr[], int size, int i) {
         heapify(arr, size, largest);
     }
 }
+
+
