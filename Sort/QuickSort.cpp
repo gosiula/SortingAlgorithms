@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cstdlib> // Dodaj ten nagłówek
+#ifndef QUICK_SORT_CPP
+#define QUICK_SORT_CPP
 
 template<typename T>
 class QuickSort {
@@ -60,3 +62,5 @@ int QuickSort<T>::choosePivot(T arr[], int low, int high, int pivotChoice) {
             return low; // Domyślnie wybieramy skrajny lewy
     }
 }
+
+#endif // QUICK_SORT_CPP

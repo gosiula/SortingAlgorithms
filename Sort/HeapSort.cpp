@@ -1,4 +1,6 @@
 #include <iostream>
+#ifndef HEAP_SORT_CPP
+#define HEAP_SORT_CPP
 
 template<typename T>
 class HeapSort {
@@ -47,4 +49,4 @@ void HeapSort<T>::heapify(T arr[], int size, int i) {
     }
 }
 
-
+#endif // HEAP_SORT_CPP

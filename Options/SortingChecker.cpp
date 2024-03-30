@@ -1,4 +1,6 @@
 #include <iostream>
+#ifndef SORTING_CHECKER_CPP
+#define SORTING_CHECKER_CPP
 
 template<typename T>
 class SortingChecker {
@@ -15,3 +17,4 @@ public:
     }
 };
 
+#endif // SORTING_CHECKER_CPP

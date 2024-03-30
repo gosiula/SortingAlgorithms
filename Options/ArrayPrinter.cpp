@@ -1,4 +1,6 @@
 #include <iostream>
+#ifndef ARRAY_PRINTER_CPP
+#define ARRAY_PRINTER_CPP
 
 template<typename T>
 class ArrayPrinter {
@@ -13,3 +15,5 @@ public:
         std::cout << std::endl << std::endl;
     }
 };
+
+#endif // ARRAY_PRINTER_CPP

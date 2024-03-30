@@ -1,4 +1,6 @@
 #include <iostream>
+#ifndef INSERTION_SORT_CPP
+#define INSERTION_SORT_CPP
 
 template<typename T>
 class InsertionSort {
@@ -20,3 +22,4 @@ void InsertionSort<T>::sort(T arr[], int size) {
     }
 }
 
+#endif // INSERTION_SORT_CPP

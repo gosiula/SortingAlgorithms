@@ -1,4 +1,6 @@
 #include <iostream>
+#ifndef SHELL_SORT_CPP
+#define SHELL_SORT_CPP
 
 template<typename T>
 class ShellSort {
@@ -41,3 +43,4 @@ void ShellSort<T>::sortWithSedgewick(T arr[], int n) {
     }
 }
 
+#endif // SHELL_SORT_CPP

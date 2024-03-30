@@ -26,6 +26,11 @@
         "functional": "cpp",
         "random": "cpp",
         "utility": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "chrono": "cpp",
+        "ctime": "cpp",
+        "deque": "cpp",
+        "fstream": "cpp",
+        "ratio": "cpp"
     }
 }
