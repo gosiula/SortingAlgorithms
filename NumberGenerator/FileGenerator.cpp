@@ -98,7 +98,7 @@ public:
         std::cout << "Liczby z pliku " << filename << " zostaly posortowane malejaco i zapisane z powrotem do tego samego pliku" << std::endl;
     }
 
-    void sortAscendingWithPercentage(int percentage,const std::string& filename) {
+    void sortAscendingWithPercentage(int percentage, const std::string& filename) {
         if (percentage <= 0 || percentage >= 100) {
             std::cerr << "Nieprawidlowy procent. Prosze podac wartosc pomiedzy 0 a 100" << std::endl;
             return;

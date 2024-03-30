@@ -95,6 +95,58 @@ public:
                         fileGen.generateAndWriteToFile(count, type);
                     }
 
+                    // Aktualizacja nazwy pliku w obiekcie DataInput
+                    setInputFilename(outputFilename);
+
+                    // Ponowne otwarcie pliku do odczytu
+                    std::ifstream inputFile(outputFilename.c_str());
+                    if (!inputFile.is_open()) {
+                        std::cerr << "Nie mozna otworzyc pliku: " << outputFilename << std::endl;
+                        return;
+                    }
+
+                    // Sprawdzenie, czy dane zostały poprawnie zapisane
+                    inputFile >> size;
+                    originalArray = new T[size];
+
+                    for (int i = 0; i < size; ++i) {
+                        inputFile >> originalArray[i];
+                    }
+
+                    inputFile.close();
+
+                    // Menu modyfikacji danych w pliku
+                    std::cout << "\nMENU MODYFIKACJI DANYCH W PLIKU" << std::endl;
+                    std::cout << "1. Losowe ulozenie (brak zmian)" << std::endl;
+                    std::cout << "2. Posortowane malejaco" << std::endl;
+                    std::cout << "3. Posortowane rosnaco" << std::endl;
+                    std::cout << "4. Posortowane rosnaco w 66%" << std::endl;
+                    std::cout << "5. Posortowane rosnaco w 33%" << std::endl;
+                    std::cout << "Wybierz opcje (1-5): ";
+                    std::cin >> innerChoice;
+
+                    switch (innerChoice) {
+                        case 1: // Nic się nie dzieje
+                            break;
+                        case 2: // Posortowane malejaco
+                            fileGen.sortDescending(outputFilename);
+                            break;
+                        case 3: // Posortowane rosnaco
+                            fileGen.sortAscendingAll(outputFilename);
+                            break;
+                        case 4: // Posortowane rosnaco w 66%
+                            fileGen.sortAscendingWithPercentage(66, outputFilename);
+                            break;
+                        case 5: // Posortowane rosnaco w 33%
+                            fileGen.sortAscendingWithPercentage(33, outputFilename);
+                            break;
+                        default:
+                            std::cout << "Nieprawidlowy wybor opcji modyfikacji" << std::endl;
+                            break;
+                    }
+
+                    std::cout << "Dane zostaly pomyslnie zmodyfikowane." << std::endl;
+
                     filename = outputFilename; // Ustawienie nazwy pliku
 
                     return;
