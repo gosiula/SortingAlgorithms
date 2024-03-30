@@ -35,18 +35,21 @@ int main() {
 
         switch (dataTypeChoice) {
             case 1:
-                dataInputInt.getElements(originalArrayInt, size, exitProgram);
+                dataInputInt.getElements(originalArrayInt, size, exitProgram, dataTypeChoice);
                 if(exitProgram == true) return 0;
+                sortingInt.setInputFilename(dataInputInt.getInputFilename());
                 sortingInt.performSorting(originalArrayInt, size, exitProgram);
                 break;
             case 2:
-                dataInputFloat.getElements(originalArrayFloat, size, exitProgram);
+                dataInputFloat.getElements(originalArrayFloat, size, exitProgram, dataTypeChoice);
                 if(exitProgram == true) return 0;
+                sortingInt.setInputFilename(dataInputFloat.getInputFilename());
                 sortingFloat.performSorting(originalArrayFloat, size, exitProgram);
                 break;
             case 3:
-                dataInputDouble.getElements(originalArrayDouble, size, exitProgram);
+                dataInputDouble.getElements(originalArrayDouble, size, exitProgram, dataTypeChoice);
                 if(exitProgram == true) return 0;
+                sortingInt.setInputFilename(dataInputDouble.getInputFilename());
                 sortingDouble.performSorting(originalArrayDouble, size, exitProgram);
                 break;
             default:

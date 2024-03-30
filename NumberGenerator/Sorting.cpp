@@ -1,3 +1,6 @@
+#ifndef SORTING_CPP
+#define SORTING_CPP
+
 #include <iostream>
 #include <ctime>
 #include <string>
@@ -18,12 +21,20 @@ private:
     HeapSort<T> heapSorter;
     ShellSort<T> shellSorter;
     QuickSort<T> quickSorter;
+    std::string filename;
 
 public:
-    void performSorting(T* originalArray, int size, bool& exitProgram) {
-        clock_t start, end; // Zmienne do pomiaru czasu
-        double elapsedTimeMillis; // Zmienna do przechowywania czasu w milisekundach
+    void setInputFilename(const std::string& filename) {
+        this->filename = filename;
+    }
 
+    std::string getInputFilename() const {
+        return filename;
+    }
+
+    void performSorting(T* originalArray, int size, bool& exitProgram) {
+        clock_t start, end;
+        double elapsedTimeMillis;
         int choice;
         int innerChoice;
         bool innerLoop = false;
@@ -45,7 +56,20 @@ public:
             switch (choice) {
                 case 1:
                     do {
-                        // Tworzymy nową tablicę dla sortowania
+                        std::ifstream inputFile(filename.c_str());
+                        if (!inputFile.is_open()) {
+                            std::cerr << "Nie mozna otworzyc pliku: " << filename << std::endl;
+                            return;
+                        }
+
+                        inputFile >> size;
+                        delete[] originalArray;
+                        originalArray = new T[size];
+                        for (int i = 0; i < size; ++i) {
+                            inputFile >> originalArray[i];
+                        }
+                        inputFile.close();
+
                         T* dynamicArray = new T[size];
                         for (int i = 0; i < size; ++i) {
                             dynamicArray[i] = originalArray[i];
@@ -65,24 +89,23 @@ public:
                                 arrayPrinter.print(originalArray, size);
                                 break;
                             case 2:
-                                start = clock(); // Początek pomiaru czasu
+                                start = clock();
                                 insertionSorter.sort(dynamicArray, size);
-                                end = clock(); // Koniec pomiaru czasu
+                                end = clock();
 
                                 std::cout << "\n\ntablica zostala posortowana przez InsertionSort" << std::endl;
                                 arrayPrinter.print(dynamicArray, size);
-
                                 if(sortingChecker.isSorted(dynamicArray, size) == true) std::cout << "liczby poprawnie posortowane" << std::endl;
                                 else std::cout << "liczby niepoprawnie posortowane" << std::endl;
 
-                                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC; // Obliczenie czasu trwania sortowania w milisekundach
-                                std::cout << "czas sortowania: " << elapsedTimeMillis << " ms" << std::endl; // Wypisanie czasu w milisekundach
+                                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC;
+                                std::cout << "czas sortowania: " << elapsedTimeMillis << " ms" << std::endl;
                                 break;
                             case 3:
                                 innerLoop = true;
                                 break;
                             case 4:
-                                delete[] dynamicArray; // Zwolnienie pamięci
+                                delete[] dynamicArray;
                                 return;
                             case 5:
                                 exitProgram = true;
@@ -95,11 +118,25 @@ public:
                     break;
                 case 2:
                     do {
-                        // Tworzymy nową tablicę dla sortowania
+                        std::ifstream inputFile(filename.c_str());
+                        if (!inputFile.is_open()) {
+                            std::cerr << "Nie mozna otworzyc pliku: " << filename << std::endl;
+                            return;
+                        }
+
+                        inputFile >> size;
+                        delete[] originalArray;
+                        originalArray = new T[size];
+                        for (int i = 0; i < size; ++i) {
+                            inputFile >> originalArray[i];
+                        }
+                        inputFile.close();
+
                         T* dynamicArray = new T[size];
                         for (int i = 0; i < size; ++i) {
                             dynamicArray[i] = originalArray[i];
                         }
+
 
                         std::cout << "\n\nMENU - sortowanie przez kopcowanie" << std::endl;
                         std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
@@ -144,11 +181,25 @@ public:
                     break;
                 case 3:
                     do {
-                        // Tworzymy nową tablicę dla sortowania
+                        std::ifstream inputFile(filename.c_str());
+                        if (!inputFile.is_open()) {
+                            std::cerr << "Nie mozna otworzyc pliku: " << filename << std::endl;
+                            return;
+                        }
+
+                        inputFile >> size;
+                        delete[] originalArray;
+                        originalArray = new T[size];
+                        for (int i = 0; i < size; ++i) {
+                            inputFile >> originalArray[i];
+                        }
+                        inputFile.close();
+
                         T* dynamicArray = new T[size];
                         for (int i = 0; i < size; ++i) {
                             dynamicArray[i] = originalArray[i];
                         }
+
 
                         std::cout << "\n\nMENU - sortowanie Shella" << std::endl;
                         std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
@@ -207,11 +258,25 @@ public:
                     break;
                 case 4:
                     do {
-                        // Tworzymy nową tablicę dla sortowania
+                        std::ifstream inputFile(filename.c_str());
+                        if (!inputFile.is_open()) {
+                            std::cerr << "Nie mozna otworzyc pliku: " << filename << std::endl;
+                            return;
+                        }
+
+                        inputFile >> size;
+                        delete[] originalArray;
+                        originalArray = new T[size];
+                        for (int i = 0; i < size; ++i) {
+                            inputFile >> originalArray[i];
+                        }
+                        inputFile.close();
+
                         T* dynamicArray = new T[size];
                         for (int i = 0; i < size; ++i) {
                             dynamicArray[i] = originalArray[i];
                         }
+
 
                         std::cout << "\n\nMENU - sortowanie szybkie" << std::endl;
                         std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
@@ -308,3 +373,5 @@ public:
         } while (choice != 6);
     }
 };
+
+#endif

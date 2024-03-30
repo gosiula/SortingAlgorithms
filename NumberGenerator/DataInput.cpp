@@ -1,19 +1,30 @@
+#ifndef DATA_INPUT_CPP
+#define DATA_INPUT_CPP
+
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "FileGenerator.cpp"
 
 template<typename T>
 class DataInput {
 private:
-    T* originalArray;
-    int size;
-    bool exitProgram;
+    std::string filename;
 
 public:
-    void getElements(T*& originalArray, int& size, bool& exitProgram) {
-        delete[] originalArray; // Zwolnienie pamięci, jeśli tablica już istnieje
+    std::string getInputFilename() const {
+        return filename;
+    }
+
+    void setInputFilename(const std::string& filename) {
+        this->filename = filename;
+    }
+    
+    void getElements(T*& originalArray, int& size, bool& exitProgram, int type) {
+        FileGenerator<T> fileGen;
 
         int choice;
+        int innerChoice;
 
         do {
             std::cout << "\nMENU WYBORU DANYCH" << std::endl;
@@ -26,12 +37,12 @@ public:
 
             switch (choice) {
                 case 1: {
-                    std::cout << "podaj ilosc elementow: ";
+                    std::cout << "Podaj ilosc elementow: ";
                     std::cin >> size;
 
                     originalArray = new T[size];
 
-                    std::cout << "podaj elementy tablicy:" << std::endl;
+                    std::cout << "Podaj elementy tablicy:" << std::endl;
                     for (int i = 0; i < size; ++i) {
                         std::cin >> originalArray[i];
                     }
@@ -39,17 +50,13 @@ public:
                     return;
                 }
                 case 2: {
-                    /*
-                    std::string filename;
-                    std::cout << "podaj nazwe pliku z danymi: ";
-                    std::cin >> filename;
+                    std::string inputFilename;
+                    std::cout << "Podaj nazwe pliku z danymi: ";
+                    std::cin >> inputFilename;
 
-                    FileGenerator<T> fileGen(filename);
-
-                    // Odczytaj dane z pliku
-                    std::ifstream inputFile(filename.c_str()); // For input file
+                    std::ifstream inputFile(inputFilename.c_str());
                     if (!inputFile.is_open()) {
-                        std::cerr << "Blad otwierania pliku." << std::endl;
+                        std::cerr << "Blad otwierania pliku" << std::endl;
                         return;
                     }
 
@@ -61,38 +68,35 @@ public:
                     }
 
                     inputFile.close();
-                    */
+                    setInputFilename(inputFilename); // Ustawienie nazwy pliku
                     return;
                 }
+
+
                 case 3: {
-                    /*
                     int count;
                     std::string outputFilename;
 
-                    std::cout << "podaj ilosc liczb: ";
+                    std::cout << "Podaj ilosc liczb: ";
                     std::cin >> count;
-                    std::cout << "podaj nazwe pliku do zapisu: ";
+                    std::cout << "Podaj nazwe pliku do zapisu: ";
                     std::cin >> outputFilename;
 
-                    FileGenerator<T> fileGen(outputFilename);
-                    fileGen.generateAndWriteToFile(count);
-
-                    // Wczytaj dane z nowego pliku
-                    std::ifstream inputFile(outputFilename.c_str()); // For input file
-                    if (!inputFile.is_open()) {
-                        std::cerr << "Blad otwierania pliku." << std::endl;
-                        return;
+                    if (type == 1) {
+                        FileGenerator<int> fileGen(outputFilename);
+                        fileGen.generateAndWriteToFile(count, type);
+                    }
+                    else if (type == 2) {
+                        FileGenerator<float> fileGen(outputFilename);
+                        fileGen.generateAndWriteToFile(count, type);
+                    }
+                    else if (type == 3) {
+                        FileGenerator<double> fileGen(outputFilename);
+                        fileGen.generateAndWriteToFile(count, type);
                     }
 
-                    inputFile >> size;
-                    originalArray = new T[size];
+                    filename = outputFilename; // Ustawienie nazwy pliku
 
-                    for (int i = 0; i < size; ++i) {
-                        inputFile >> originalArray[i];
-                    }
-
-                    inputFile.close();
-                    */
                     return;
                 }
                 case 4: {
@@ -100,10 +104,12 @@ public:
                     return;
                 }
                 default: {
-                    std::cout << "nieprawidlowy wybor opcji" << std::endl;
+                    std::cout << "Nieprawidlowy wybor opcji" << std::endl;
                     break;
                 }
             }
         } while (choice != 4);
     }
 };
+
+#endif
