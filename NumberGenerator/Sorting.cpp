@@ -62,11 +62,15 @@ public:
                             return;
                         }
 
-                        inputFile >> size;
+                        inputFile >> size; // Wczytanie liczby elementów
                         delete[] originalArray;
                         originalArray = new T[size];
+
+                        // Wczytanie liczb zmiennoprzecinkowych do tablicy
                         for (int i = 0; i < size; ++i) {
-                            inputFile >> originalArray[i];
+                            T value;
+                            inputFile >> value;
+                            originalArray[i] = value;
                         }
                         inputFile.close();
 
@@ -124,11 +128,15 @@ public:
                             return;
                         }
 
-                        inputFile >> size;
+                        inputFile >> size; // Wczytanie liczby zmiennoprzecinkowej jako rozmiaru tablicy
                         delete[] originalArray;
                         originalArray = new T[size];
+
+                        // Wczytanie liczb zmiennoprzecinkowych do tablicy
                         for (int i = 0; i < size; ++i) {
-                            inputFile >> originalArray[i];
+                            T value;
+                            inputFile >> value;
+                            originalArray[i] = value;
                         }
                         inputFile.close();
 

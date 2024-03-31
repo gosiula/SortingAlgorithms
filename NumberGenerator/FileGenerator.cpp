@@ -39,20 +39,20 @@ public:
         outputFile << count << std::endl; // Pierwsza linia to liczba elementów
 
         if (type == 1) {
-            for (int i = 0; i < count; ++i) {
-                int randomNumber = (rand()) % (1000 - 0 + 1) + 0; // Losuj w zakresie od minValue do maxValue
-                outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
-            }
+        for (int i = 0; i < count; ++i) {
+            T randomNumber = static_cast<T>((rand() % (10000 - (-10000) + 1)) + (-10000)); // Losuj w zakresie od -10000 do 10000
+            outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
+        }
         }
         else if (type == 2) {
             for (int i = 0; i < count; ++i) {
-                float randomNumber = (rand()) % (1000 - 0 + 1) + 0; // Losuj w zakresie od minValue do maxValue
+                float randomNumber = static_cast<float>(rand()) / (RAND_MAX / 20000.0f) - 10000.0f; // Losuj w zakresie od -10000.0 do 10000.0
                 outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
             }
         }
         else if (type == 3) {
             for (int i = 0; i < count; ++i) {
-                double randomNumber = (rand()) % (1000 - 0 + 1) + 0; // Losuj w zakresie od minValue do maxValue
+                double randomNumber = static_cast<double>(rand()) / (RAND_MAX / 20000.0) - 10000.0; // Losuj w zakresie od -10000.0 do 10000.0
                 outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
             }
         }

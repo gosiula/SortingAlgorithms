@@ -28,28 +28,14 @@ public:
 
         do {
             std::cout << "\nMENU WYBORU DANYCH" << std::endl;
-            std::cout << "1. Dane wpisywane recznie" << std::endl;
-            std::cout << "2. Dane z gotowego pliku" << std::endl;
-            std::cout << "3. Dane z nowego pliku" << std::endl;
-            std::cout << "4. Wyjscie z programu\n" << std::endl;
-            std::cout << "Wybierz opcje (1-4): ";
+            std::cout << "1. Dane z gotowego pliku" << std::endl;
+            std::cout << "2. Dane z nowego pliku" << std::endl;
+            std::cout << "3. Wyjscie z programu\n" << std::endl;
+            std::cout << "Wybierz opcje (1-3): ";
             std::cin >> choice;
-
+            
             switch (choice) {
                 case 1: {
-                    std::cout << "Podaj ilosc elementow: ";
-                    std::cin >> size;
-
-                    originalArray = new T[size];
-
-                    std::cout << "Podaj elementy tablicy:" << std::endl;
-                    for (int i = 0; i < size; ++i) {
-                        std::cin >> originalArray[i];
-                    }
-
-                    return;
-                }
-                case 2: {
                     std::string inputFilename;
                     std::cout << "Podaj nazwe pliku z danymi: ";
                     std::cin >> inputFilename;
@@ -73,7 +59,7 @@ public:
                 }
 
 
-                case 3: {
+                case 2: {
                     int count;
                     std::string outputFilename;
 
@@ -151,7 +137,7 @@ public:
 
                     return;
                 }
-                case 4: {
+                case 3: {
                     exitProgram = true;
                     return;
                 }
@@ -160,7 +146,7 @@ public:
                     break;
                 }
             }
-        } while (choice != 4);
+        } while (choice != 3);
     }
 };
 
