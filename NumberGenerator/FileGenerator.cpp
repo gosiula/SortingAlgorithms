@@ -13,8 +13,8 @@
 
 enum{
     typeInt = 1, 
-    typeDouble = 2,
-    typeFloat = 3
+    typeFloat = 2,
+    typeDouble = 3
 };
 
 template<typename T>

@@ -32,6 +32,8 @@
         "deque": "cpp",
         "fstream": "cpp",
         "ratio": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "iomanip": "cpp",
+        "sstream": "cpp"
     }
 }

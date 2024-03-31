@@ -12,6 +12,7 @@ template<typename T>
 class DataInput {
 private:
     std::string filename;
+    std::string arrangement;
 
 public:
     std::string getInputFilename() const {
@@ -21,6 +22,10 @@ public:
     void setInputFilename(const std::string& filename) {
         this->filename = filename;
     }
+
+    std::string getArrangement() const {
+        return arrangement;
+    }   
     
     void getElements(T*& originalArray, int& size, bool& exitProgram, int type) {
         FileGenerator<T> fileGen;
@@ -59,7 +64,6 @@ public:
                     setInputFilename(inputFilename); // Ustawienie nazwy pliku
                     return;
                 }
-
 
                 case 2: {
                     int count;
@@ -115,18 +119,23 @@ public:
 
                     switch (innerChoice) {
                         case 1: // Nic się nie dzieje
+                            arrangement = "liczby losowe";
                             break;
                         case 2: // Posortowane malejaco
                             fileGen.sortDescending(outputFilename);
+                            arrangement = "liczby posortowane malejaco";
                             break;
                         case 3: // Posortowane rosnaco
                             fileGen.sortAscendingAll(outputFilename);
+                            arrangement = "liczby posortowane rosnaco";
                             break;
                         case 4: // Posortowane rosnaco w 66%
                             fileGen.sortAscendingWithPercentage(66, outputFilename);
+                            arrangement = "liczby posortowane rosnaco w 66%";
                             break;
                         case 5: // Posortowane rosnaco w 33%
                             fileGen.sortAscendingWithPercentage(33, outputFilename);
+                            arrangement = "liczby posortowane rosnaco w 33%";
                             break;
                         default:
                             std::cout << "Nieprawidlowy wybor opcji modyfikacji" << std::endl;

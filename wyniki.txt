@@ -1,0 +1,5 @@
+Typ danych: int
+Ilosc liczb: 10
+Ilosc powtorzen: 100
+Poziom losowosci liczb: liczby losowe
+Sredni czas sortowania: 0 ms
