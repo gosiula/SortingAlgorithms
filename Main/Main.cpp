@@ -30,7 +30,7 @@ int main() {
         float* originalArrayFloat = new float[size];
         double* originalArrayDouble = new double[size];
 
-        std::cout << "wybierz typ danych (1 - int, 2 - float, 3 - double): ";
+        std::cout << "wybierz typ danych " << typeInt << " - int, 2 - float, 3 - double): ";
         std::cin >> dataTypeChoice;
 
         switch (dataTypeChoice) {
@@ -43,13 +43,13 @@ int main() {
             case 2:
                 dataInputFloat.getElements(originalArrayFloat, size, exitProgram, dataTypeChoice);
                 if(exitProgram == true) return 0;
-                sortingInt.setInputFilename(dataInputFloat.getInputFilename());
+                sortingFloat.setInputFilename(dataInputFloat.getInputFilename());
                 sortingFloat.performSorting(originalArrayFloat, size, exitProgram);
                 break;
             case 3:
                 dataInputDouble.getElements(originalArrayDouble, size, exitProgram, dataTypeChoice);
                 if(exitProgram == true) return 0;
-                sortingInt.setInputFilename(dataInputDouble.getInputFilename());
+                sortingDouble.setInputFilename(dataInputDouble.getInputFilename());
                 sortingDouble.performSorting(originalArrayDouble, size, exitProgram);
                 break;
             default:

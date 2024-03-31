@@ -6,6 +6,8 @@
 #include <string>
 #include "FileGenerator.cpp"
 
+using namespace std;
+
 template<typename T>
 class DataInput {
 private:
@@ -13,7 +15,7 @@ private:
 
 public:
     std::string getInputFilename() const {
-        return filename;
+        return this->filename;
     }
 
     void setInputFilename(const std::string& filename) {
@@ -62,7 +64,7 @@ public:
                 case 2: {
                     int count;
                     std::string outputFilename;
-
+                    
                     std::cout << "Podaj ilosc liczb: ";
                     std::cin >> count;
                     std::cout << "Podaj nazwe pliku do zapisu: ";

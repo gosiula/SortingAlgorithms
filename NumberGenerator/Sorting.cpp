@@ -56,10 +56,12 @@ public:
             switch (choice) {
                 case 1:
                     do {
-                        std::ifstream inputFile(filename.c_str());
+                        std::ifstream inputFile(this->filename.c_str());
                         if (!inputFile.is_open()) {
-                            std::cerr << "Nie mozna otworzyc pliku: " << filename << std::endl;
+                            std::cout << "Nie mozna otworzyc  " << this->filename << std::endl;
+                            std::cout << this->filename << std::endl;
                             return;
+
                         }
 
                         inputFile >> size; // Wczytanie liczby elementów

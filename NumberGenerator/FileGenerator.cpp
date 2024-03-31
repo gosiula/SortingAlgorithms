@@ -11,6 +11,12 @@
 #include <limits>
 #include <functional> // Dla std::greater
 
+enum{
+    typeInt = 1, 
+    typeDouble = 2,
+    typeFloat = 3
+};
+
 template<typename T>
 class FileGenerator {
 private:
@@ -38,19 +44,19 @@ public:
 
         outputFile << count << std::endl; // Pierwsza linia to liczba elementów
 
-        if (type == 1) {
+        if (type == typeInt) {
         for (int i = 0; i < count; ++i) {
             T randomNumber = static_cast<T>((rand() % (10000 - (-10000) + 1)) + (-10000)); // Losuj w zakresie od -10000 do 10000
             outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
         }
         }
-        else if (type == 2) {
+        else if (type == typeFloat) {
             for (int i = 0; i < count; ++i) {
                 float randomNumber = static_cast<float>(rand()) / (RAND_MAX / 20000.0f) - 10000.0f; // Losuj w zakresie od -10000.0 do 10000.0
                 outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
             }
         }
-        else if (type == 3) {
+        else if (type == typeDouble) {
             for (int i = 0; i < count; ++i) {
                 double randomNumber = static_cast<double>(rand()) / (RAND_MAX / 20000.0) - 10000.0; // Losuj w zakresie od -10000.0 do 10000.0
                 outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
