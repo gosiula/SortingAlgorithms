@@ -3,6 +3,8 @@
 #ifndef QUICK_SORT_CPP
 #define QUICK_SORT_CPP
 
+using namespace std;
+
 template<typename T>
 class QuickSort {
 public:
@@ -17,13 +19,14 @@ void QuickSort<T>::sort(T arr[], int n, int pivotChoice) {
     quickSort(arr, 0, n - 1, pivotChoice);
 }
 
+// sortowanie szybkie
 template<typename T>
 void QuickSort<T>::quickSort(T arr[], int low, int high, int pivotChoice) {
     if (low < high) {
-        int pivotIndex = choosePivot(arr, low, high, pivotChoice);
+        int pivotIndex = choosePivot(arr, low, high, pivotChoice); // pivot
         T pivotValue = arr[pivotIndex];
 
-        // Przenoszenie elementów mniejszych od pivota do lewej strony i większych do prawej strony
+        // przenoszenie elementow mniejszych od pivota do lewej strony i wiekszych do prawej strony
         int i = low;
         int j = high;
         while (i <= j) {
@@ -40,7 +43,7 @@ void QuickSort<T>::quickSort(T arr[], int low, int high, int pivotChoice) {
             }
         }
 
-        // Rekurencyjne sortowanie dwóch podziałów
+        // rekurencyjne sortowanie dwoch podzialow
         quickSort(arr, low, j, pivotChoice);
         quickSort(arr, i, high, pivotChoice);
     }
@@ -48,19 +51,19 @@ void QuickSort<T>::quickSort(T arr[], int low, int high, int pivotChoice) {
 
 template<typename T>
 int QuickSort<T>::choosePivot(T arr[], int low, int high, int pivotChoice) {
-    // Wybór pivota zgodnie z wybraną metodą
+    // wybór pivota zgodnie z wybrana metoda
     switch (pivotChoice) {
-        case 1: // Skrajny lewy
+        case 1: // skrajny lewy
             return low;
-        case 2: // Skrajny prawy
+        case 2: // skrajny prawy
             return high;
-        case 3: // Środkowy
+        case 3: // srodkowy
             return low + (high - low) / 2;
-        case 4: // Losowy
+        case 4: // losowy
             return low + rand() % (high - low + 1);
         default:
-            return low; // Domyślnie wybieramy skrajny lewy
+            return low; // domyslnie wybieramy skrajny lewy
     }
 }
 
-#endif // QUICK_SORT_CPP
+#endif 

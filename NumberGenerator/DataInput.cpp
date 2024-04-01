@@ -11,69 +11,93 @@ using namespace std;
 template<typename T>
 class DataInput {
 private:
-    std::string filename;
-    std::string arrangement;
+    string filename; // nazwa pliku
+    string arrangement; // typ ulozenia danych 
 
 public:
-    std::string getInputFilename() const {
+    // gettery i settery
+    string getInputFilename() const {
         return this->filename;
     }
 
-    void setInputFilename(const std::string& filename) {
+    void setInputFilename(const string& filename) {
         this->filename = filename;
     }
 
-    std::string getArrangement() const {
+    string getArrangement() const {
         return arrangement;
     }   
     
+    // funkcja do wyboru danych wejsciowych
     void getElements(T*& originalArray, int& size, bool& exitProgram, int type) {
-        FileGenerator<T> fileGen;
+        FileGenerator<T> fileGen; // obiekt typu FileGenerator ktory uzupelnia plik z danymi
 
-        int choice;
-        int innerChoice;
+        int choice; // wybor w menu
+        int innerChoice; // wybor w menu wewnetrznym
 
         do {
-            std::cout << "\nMENU WYBORU DANYCH" << std::endl;
-            std::cout << "1. Dane z gotowego pliku" << std::endl;
-            std::cout << "2. Dane z nowego pliku" << std::endl;
-            std::cout << "3. Wyjscie z programu\n" << std::endl;
-            std::cout << "Wybierz opcje (1-3): ";
-            std::cin >> choice;
+            cout << "\nMENU WYBORU DANYCH" << endl;
+            cout << "1. Dane z gotowego pliku" << endl;
+            cout << "2. Dane z nowego pliku" << endl;
+            cout << "3. Wyjscie z programu\n" << endl;
+            cout << "Wybierz opcje (1-3): ";
+
+            // sprawdzanie czy wprowadzona wartosc jest liczba
+            if (!(cin >> choice)) {
+                cout << "niepoprawna liczba - wprowadz ponownie\n"; // komunikat o zlym wyborze
+                cin.clear(); // czyszczenie bledu w strumieniu wejscia
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // usuniecie niepoprawnej linii wejscia
+                continue; // petla rozpoczyna sie od nowa
+            }
             
             switch (choice) {
                 case 1: {
-                    std::string inputFilename;
-                    std::cout << "Podaj nazwe pliku z danymi: ";
-                    std::cin >> inputFilename;
+                    string inputFilename; // nazwa pliku
+                    cout << "podaj nazwe pliku z danymi: ";
+                    cin >> inputFilename; // wczytanie nazwy pliku
 
-                    std::ifstream inputFile(inputFilename.c_str());
+                    // komunikat jesli plik nie zostal znaleziony
+                    ifstream inputFile(inputFilename.c_str());
                     if (!inputFile.is_open()) {
-                        std::cerr << "Blad otwierania pliku" << std::endl;
+                        cout << "blad otwierania pliku" << endl;
                         return;
                     }
 
-                    inputFile >> size;
-                    originalArray = new T[size];
+                    inputFile >> size; // wczytanie wielkosci tablicy z pliku
+                    originalArray = new T[size]; // stworzenie tablicy o danej wielkosci
 
+                    // wczytanie tablicy z pliku
                     for (int i = 0; i < size; ++i) {
                         inputFile >> originalArray[i];
                     }
 
-                    inputFile.close();
-                    setInputFilename(inputFilename); // Ustawienie nazwy pliku
+                    inputFile.close(); // zamkniecie pliku
+                    setInputFilename(inputFilename); // ustawienie nazwy pliku
                     return;
                 }
 
                 case 2: {
-                    int count;
-                    std::string outputFilename;
+                    int count; // wielkosc tablicy
+                    string outputFilename; // nazwa pliku
                     
-                    std::cout << "Podaj ilosc liczb: ";
-                    std::cin >> count;
-                    std::cout << "Podaj nazwe pliku do zapisu: ";
-                    std::cin >> outputFilename;
+                    // wczytanie ilosci liczb 
+                    do {
+                        cout << "podaj ilosc liczb: ";
 
+                        // sprawdzanie czy wprowadzona wartosc jest liczba
+                        if (!(cin >> count) || count <= 0) {
+                            cout << "niepoprawna liczba - wprowadz ponownie\n"; // komunikat o zlym wyborze
+                            cin.clear(); // czyszczenie bledu w strumieniu wejscia
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // usuniecie niepoprawnej linii wejscia
+                            continue; // petla rozpoczyna sie od nowa
+                        }
+                        break;
+                    } while (true);
+
+                    cout << "podaj nazwe pliku do zapisu: ";
+                    cin >> outputFilename; // wczytanie nazwy pliku
+
+                    // w zaleznosci od wczytanego typu w main losujemy i zapisujemy dana ilosc liczb do pliku
                     if (type == 1) {
                         FileGenerator<int> fileGen(outputFilename);
                         fileGen.generateAndWriteToFile(count, type);
@@ -87,73 +111,81 @@ public:
                         fileGen.generateAndWriteToFile(count, type);
                     }
 
-                    // Aktualizacja nazwy pliku w obiekcie DataInput
-                    setInputFilename(outputFilename);
+                    setInputFilename(outputFilename); // aktualizacja nazwy pliku w obiekcie DataInput
 
-                    // Ponowne otwarcie pliku do odczytu
-                    std::ifstream inputFile(outputFilename.c_str());
+                    // otwarcie pliku do odczytu
+                    ifstream inputFile(outputFilename.c_str());
                     if (!inputFile.is_open()) {
-                        std::cerr << "Nie mozna otworzyc pliku: " << outputFilename << std::endl;
+                        cout << "nie mozna otworzyc pliku: " << outputFilename << endl;
                         return;
                     }
+                    
+                    inputFile >> size; // wczytanie wielkosci z pliku
+                    originalArray = new T[size]; // stworzenie tablicy o danej wielkosci
 
-                    // Sprawdzenie, czy dane zostały poprawnie zapisane
-                    inputFile >> size;
-                    originalArray = new T[size];
-
+                    // wczytanie tablicy z pliku
                     for (int i = 0; i < size; ++i) {
                         inputFile >> originalArray[i];
                     }
 
-                    inputFile.close();
+                    inputFile.close(); // zamkniecie pliku
 
-                    // Menu modyfikacji danych w pliku
-                    std::cout << "\nMENU MODYFIKACJI DANYCH W PLIKU" << std::endl;
-                    std::cout << "1. Losowe ulozenie (brak zmian)" << std::endl;
-                    std::cout << "2. Posortowane malejaco" << std::endl;
-                    std::cout << "3. Posortowane rosnaco" << std::endl;
-                    std::cout << "4. Posortowane rosnaco w 66%" << std::endl;
-                    std::cout << "5. Posortowane rosnaco w 33%" << std::endl;
-                    std::cout << "Wybierz opcje (1-5): ";
-                    std::cin >> innerChoice;
+                    // menu modyfikacji danych w pliku
+                    do {
+                        cout << "\nMENU MODYFIKACJI DANYCH W PLIKU" << endl;
+                        cout << "1. Losowe ulozenie (brak zmian)" << endl;
+                        cout << "2. Posortowane malejaco" << endl;
+                        cout << "3. Posortowane rosnaco" << endl;
+                        cout << "4. Posortowane rosnaco w 66%" << endl;
+                        cout << "5. Posortowane rosnaco w 33%" << endl;
+                        cout << "Wybierz opcje (1-5): ";
 
-                    switch (innerChoice) {
-                        case 1: // Nic się nie dzieje
-                            arrangement = "liczby losowe";
-                            break;
-                        case 2: // Posortowane malejaco
-                            fileGen.sortDescending(outputFilename);
-                            arrangement = "liczby posortowane malejaco";
-                            break;
-                        case 3: // Posortowane rosnaco
-                            fileGen.sortAscendingAll(outputFilename);
-                            arrangement = "liczby posortowane rosnaco";
-                            break;
-                        case 4: // Posortowane rosnaco w 66%
-                            fileGen.sortAscendingWithPercentage(66, outputFilename);
-                            arrangement = "liczby posortowane rosnaco w 66%";
-                            break;
-                        case 5: // Posortowane rosnaco w 33%
-                            fileGen.sortAscendingWithPercentage(33, outputFilename);
-                            arrangement = "liczby posortowane rosnaco w 33%";
-                            break;
-                        default:
-                            std::cout << "Nieprawidlowy wybor opcji modyfikacji" << std::endl;
-                            break;
-                    }
+                        // sprawdzanie czy wprowadzona wartosc jest liczba
+                        if (!(cin >> innerChoice)) {
+                            cout << "niepoprawna liczba - wprowadz ponownie\n"; // komunikat o zlym wyborze 
+                            cin.clear(); // czyszczenie bledu w strumieniu wejscia
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // usuniecie niepoprawnej linii wejscia
+                            continue; // petla rozpoczyna sie od nowa
+                        }
 
-                    std::cout << "Dane zostaly pomyslnie zmodyfikowane." << std::endl;
+                        switch (innerChoice) {
+                            case 1: // brak zmian
+                                arrangement = "liczby losowe";
+                                return;
+                            case 2: // posortowane malejaco
+                                fileGen.sortDescending(outputFilename);
+                                arrangement = "liczby posortowane malejaco";
+                                return;
+                            case 3: // posortowane rosnaco
+                                fileGen.sortAscendingAll(outputFilename);
+                                arrangement = "liczby posortowane rosnaco";
+                                return;
+                            case 4: // posortowane rosnaco w 66%
+                                fileGen.sortAscendingWithPercentage(66, outputFilename);
+                                arrangement = "liczby posortowane rosnaco w 66%";
+                                return;
+                            case 5: // posortowane rosnaco w 33%
+                                fileGen.sortAscendingWithPercentage(33, outputFilename);
+                                arrangement = "liczby posortowane rosnaco w 33%";
+                                return;
+                            default:
+                                cout << "nieprawidlowy wybor opcji modyfikacji" << endl;
+                                break;
+                        }
+                    } while (true);
 
-                    filename = outputFilename; // Ustawienie nazwy pliku
+                    cout << "dane zostaly pomyslnie zmodyfikowane" << endl;
+
+                    filename = outputFilename; // ustawienie nazwy pliku
 
                     return;
                 }
-                case 3: {
+                case 3: { // wyjscie z programu
                     exitProgram = true;
                     return;
                 }
                 default: {
-                    std::cout << "Nieprawidlowy wybor opcji" << std::endl;
+                    cout << "nieprawidlowy wybor opcji" << endl;
                     break;
                 }
             }

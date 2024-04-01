@@ -2,18 +2,21 @@
 #ifndef ARRAY_PRINTER_CPP
 #define ARRAY_PRINTER_CPP
 
+using namespace std;
+
 template<typename T>
 class ArrayPrinter {
 public:
+    // funkcja ktora wypisuje zawartosc tablicy 
     void print(T arr[], int size) {
-        std::cout << "Zawartosc tablicy:" << std::endl;
+        cout << "Zawartosc tablicy:" << endl;
         for (int i = 0; i < size; ++i) {
-            std::cout << arr[i];
-            if (i != size - 1) // Dodaj przecinek poza ostatnim elementem
-                std::cout << ", ";
+            cout << arr[i];
+            if (i != size - 1)
+                cout << ", ";
         }
-        std::cout << std::endl << std::endl;
+        cout << endl << endl;
     }
 };
 
-#endif // ARRAY_PRINTER_CPP
+#endif

@@ -6,7 +6,7 @@ template<typename T>
 class SortingChecker {
 public:
 
-    // Metoda sprawdzająca, czy tablica jest posortowana rosnąco
+    // funkcja sprawdzajaca czy tablica jest posortowana rosnaco
     bool isSorted(const T* array, int size) {
         for (int i = 0; i < size - 1; ++i) {
             if (array[i] > array[i + 1]) {
@@ -17,4 +17,4 @@ public:
     }
 };
 
-#endif // SORTING_CHECKER_CPP
+#endif

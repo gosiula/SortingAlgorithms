@@ -27,12 +27,12 @@ private:
     HeapSort<T> heapSorter;
     ShellSort<T> shellSorter;
     QuickSort<T> quickSorter;
-    std::string filename;
+    string filename;
     DataInput<T> dataInput;
     ResultSaver resultSaver;
-    int repetition;  // Nowo dodane pole repetition
-    T* originalArray;  // Nowo dodane pole originalArray
-    int size;  // Nowo dodane pole size
+    int repetition; 
+    T* originalArray; 
+    int size; 
     int type;
     string arrangement;
 
@@ -45,8 +45,9 @@ public:
         return filename;
     }
 
+// funkcja sortujaca i zapisujaca wyniki
 template<typename SorterType, typename SortFunction>
-void performSortingAndSaveResults(SorterType& sorter, SortFunction sortFunction, T* originalArray, int size, int repetition, int type, const std::string& arrangement, const std::string& filename) {
+void performSortingAndSaveResults(SorterType& sorter, SortFunction sortFunction, T* originalArray, int size, int repetition, int type, const string& arrangement, const string& filename) {
     LARGE_INTEGER frequency;
     LARGE_INTEGER start;
     LARGE_INTEGER end;
@@ -55,62 +56,69 @@ void performSortingAndSaveResults(SorterType& sorter, SortFunction sortFunction,
 
     double totalTime = 0.0;
 
+    // dla jednego powtorzenia
     if (repetition == 1) {
-        // Usunięcie zawartości posortowanej tablicy
+        // usuniecie zawartosci posortowanej tablicy
         T* dynamicArray = new T[size];
         for (int j = 0; j < size; ++j) {
             dynamicArray[j] = originalArray[j];
         }
 
+        // sortowanie wraz z obliczeniem czasu
         QueryPerformanceCounter(&start);
         (sorter.*sortFunction)(dynamicArray, size);
         QueryPerformanceCounter(&end);
 
-        totalTime = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart;
+        totalTime = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart; // czas
 
-        std::cout << "\n\ntablica zostala posortowana przez InsertionSort" << std::endl;
-        arrayPrinter.print(dynamicArray, size);
+        cout << "\n\ntablica zostala posortowana" << endl;
+        arrayPrinter.print(dynamicArray, size); // wypisanie liczb po sortowaniu
+
+        // sprawdzenie czy liczby zostaly poprawnie posortowane
         if (sortingChecker.isSorted(dynamicArray, size)) {
-            std::cout << "liczby poprawnie posortowane" << std::endl;
+            cout << "liczby poprawnie posortowane" << endl;
         } else {
-            std::cout << "liczby niepoprawnie posortowane" << std::endl;
+            cout << "liczby niepoprawnie posortowane" << endl;
         }
 
-        std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << totalTime * 1000.0 << " ms" << std::endl;
+        cout << "czas sortowania: " << fixed << setprecision(6) << totalTime * 1000.0 << " ms" << endl;
 
-        delete[] dynamicArray; // Zwolnienie pamięci
-    } else {
+        delete[] dynamicArray; // zwolnienie pamieci
+    } else { // dla wiekszej ilosci powtorzen
         for(int i = 1; i <= repetition; ++i) {
-            // Czyszczenie zawartości posortowanej tablicy
+            // czyszczenie zawartosci posortowanej tablicy
             T* dynamicArray = new T[size];
             for (int j = 0; j < size; ++j) {
                 dynamicArray[j] = originalArray[j];
             }
 
+            // sortowanie z obliczaniem czasu
             QueryPerformanceCounter(&start);
             (sorter.*sortFunction)(dynamicArray, size);
             QueryPerformanceCounter(&end);
 
-            totalTime += static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart;
+            totalTime += static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart; // czas
 
+            // sprawdzanie czy liczby zostaly poprawnie posortowane
             if (sortingChecker.isSorted(dynamicArray, size)) {
-                std::cout << i << ". liczby poprawnie posortowane : ";
+                cout << i << ". liczby poprawnie posortowane : ";
             } else {
-                std::cout << i << ". liczby niepoprawnie posortowane";
+                cout << i << ". liczby niepoprawnie posortowane";
             }
 
-            std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << (totalTime / i) * 1000.0 << " ms" << std::endl;
+            cout << "czas sortowania: " << fixed << setprecision(6) << (totalTime / i) * 1000.0 << " ms" << endl;
 
-            delete[] dynamicArray; // Zwolnienie pamięci
+            delete[] dynamicArray; // zwolnienie pamieci
         }
     }
 
-    // Zapisz wyniki do pliku
+    // zapisanie wynikow do pliku
     resultSaver.saveResults(type, size, repetition, totalTime / repetition * 1000.0, arrangement, filename);
 }
 
+// funkcja sortujaca i zapisujaca wyniki (dla quicksort)
 template<typename SorterType, typename SortFunction>
-void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, SortFunction sortFunction, T* originalArray, int size, int repetition, int type, const std::string& arrangement, const std::string& filename) {
+void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, SortFunction sortFunction, T* originalArray, int size, int repetition, int type, const string& arrangement, const string& filename) {
     LARGE_INTEGER frequency;
     LARGE_INTEGER start;
     LARGE_INTEGER end;
@@ -120,7 +128,6 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
     double totalTime = 0.0;
 
     if (repetition == 1) {
-        // Usunięcie zawartości posortowanej tablicy
         T* dynamicArray = new T[size];
         for (int j = 0; j < size; ++j) {
             dynamicArray[j] = originalArray[j];
@@ -132,20 +139,19 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
 
         totalTime = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart;
 
-        std::cout << "\n\ntablica zostala posortowana przez InsertionSort" << std::endl;
+        cout << "\n\ntablica zostala posortowana przez InsertionSort" << endl;
         arrayPrinter.print(dynamicArray, size);
         if (sortingChecker.isSorted(dynamicArray, size)) {
-            std::cout << "liczby poprawnie posortowane" << std::endl;
+            cout << "liczby poprawnie posortowane" << endl;
         } else {
-            std::cout << "liczby niepoprawnie posortowane" << std::endl;
+            cout << "liczby niepoprawnie posortowane" << endl;
         }
 
-        std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << totalTime * 1000.0 << " ms" << std::endl;
+        cout << "czas sortowania: " << fixed << setprecision(6) << totalTime * 1000.0 << " ms" << endl;
 
-        delete[] dynamicArray; // Zwolnienie pamięci
+        delete[] dynamicArray;
     } else {
         for(int i = 1; i <= repetition; ++i) {
-            // Czyszczenie zawartości posortowanej tablicy
             T* dynamicArray = new T[size];
             for (int j = 0; j < size; ++j) {
                 dynamicArray[j] = originalArray[j];
@@ -158,24 +164,22 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
             totalTime += static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart;
 
             if (sortingChecker.isSorted(dynamicArray, size)) {
-                std::cout << i << ". liczby poprawnie posortowane : ";
+                cout << i << ". liczby poprawnie posortowane : ";
             } else {
-                std::cout << i << ". liczby niepoprawnie posortowane";
+                cout << i << ". liczby niepoprawnie posortowane";
             }
 
-            std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << (totalTime / i) * 1000.0 << " ms" << std::endl;
+            cout << "czas sortowania: " << fixed << setprecision(6) << (totalTime / i) * 1000.0 << " ms" << endl;
 
-            delete[] dynamicArray; // Zwolnienie pamięci
+            delete[] dynamicArray; 
         }
     }
 
-    // Zapisz wyniki do pliku
     resultSaver.saveResults(type, size, repetition, totalTime / repetition * 1000.0, arrangement, filename);
 }
 
-
-
-    void performSorting(T* originalArray, int size, bool& exitProgram, int repetition, int type, const std::string& arrangement) {
+    // funkcja do wywolania sortowania przez menu
+    void performSorting(T* originalArray, int size, bool& exitProgram, int repetition, int type, const string& arrangement) {
         clock_t start, end;
         double elapsedTimeMillis;
         int choice;
@@ -184,63 +188,78 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
         double averageTime = 0.0;
 
         do {
-            std::cout << "\n\nMENU GLOWNE" << std::endl;
-            std::cout << "1. sortowanie przez wstawianie" << std::endl;
-            std::cout << "2. sortowanie przez kopcowanie" << std::endl;
-            std::cout << "3. sortowanie Shella" << std::endl;
-            std::cout << "4. sortowanie szybkie" << std::endl;
-            std::cout << "5. wczytaj ponownie dane" << std::endl;
-            std::cout << "6. wyjscie z programu\n" << std::endl;
-            std::cout << "wybierz opcje (1-6): ";
-            std::cin >> choice;
-            std::cout << std::endl;
+            cout << "\n\nMENU GLOWNE" << endl;
+            cout << "1. sortowanie przez wstawianie" << endl;
+            cout << "2. sortowanie przez kopcowanie" << endl;
+            cout << "3. sortowanie Shella" << endl;
+            cout << "4. sortowanie szybkie" << endl;
+            cout << "5. wczytaj ponownie dane" << endl;
+            cout << "6. wyjscie z programu\n" << endl;
+            cout << "wybierz opcje (1-6): ";
+
+            // sprawdzanie czy wprowadzona wartosc jest liczba
+            if (!(cin >> choice)) {
+                cout << "niepoprawna liczba - wprowadz ponownie\n"; // komunikat o zlym wyborze
+                cin.clear(); // czyszczenie bledu w strumieniu wejscia
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // usuniecie niepoprawnej linii wejscia
+                continue; // petla rozpoczyna sie od nowa
+            }
+            cout << endl;
 
             innerLoop = false;
 
             switch (choice) {
                 case 1:
                     do {
-                        std::ifstream inputFile(this->filename.c_str());
+                        // otworzenie pliku
+                        ifstream inputFile(this->filename.c_str());
                         if (!inputFile.is_open()) {
-                            std::cout << "Nie mozna otworzyc  " << this->filename << std::endl;
-                            std::cout << this->filename << std::endl;
+                            cout << "nie mozna otworzyc  " << this->filename << endl;
+                            cout << this->filename << endl;
                             return;
 
                         }
 
-                        inputFile >> size; // Wczytanie liczby elementów
-                        delete[] originalArray;
-                        originalArray = new T[size];
+                        inputFile >> size; // wczytanie liczby elementow
+                        delete[] originalArray; // usuniecie
+                        originalArray = new T[size]; // stworzenie nowej tablicy 
 
-                        // Wczytanie liczb zmiennoprzecinkowych do tablicy
+                        // wczytanie liczb z pliku
                         for (int i = 0; i < size; ++i) {
                             T value;
                             inputFile >> value;
                             originalArray[i] = value;
                         }
-                        inputFile.close();
+                        inputFile.close(); // zamkniecie pliku
 
+                        // wczytanie liczb z oryginalnej tablicy to tablicy pomocniczej na ktorej bedziemy sortowac
                         T* dynamicArray = new T[size];
                         for (int i = 0; i < size; ++i) {
                             dynamicArray[i] = originalArray[i];
                         }
 
-                        std::cout << "\n\nMENU - sortowanie przez wstawianie" << std::endl;
-                        std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
-                        std::cout << "2. posortuj" << std::endl;
-                        std::cout << "3. cofnij do menu glownego" << std::endl;
-                        std::cout << "4. wybierz ponownie dane wejsciowe" << std::endl;
-                        std::cout << "5. wyjscie z programu" << std::endl;
-                        std::cout << "wybierz opcje (1-5): ";
-                        std::cin >> innerChoice;
+                        cout << "\n\nMENU - sortowanie przez wstawianie" << endl;
+                        cout << "1. wypisz tablice przed sortowaniem" << endl;
+                        cout << "2. posortuj" << endl;
+                        cout << "3. cofnij do menu glownego" << endl;
+                        cout << "4. wybierz ponownie dane wejsciowe" << endl;
+                        cout << "5. wyjscie z programu" << endl;
+                        cout << "wybierz opcje (1-5): ";
 
-                        double totalTime = 0.0;
+                        // sprawdzanie czy wprowadzona wartosc jest liczba
+                        if (!(cin >> innerChoice)) {
+                            cout << "niepoprawna liczba - wprowadz ponownie\n"; // komunikat o zlym wyborze
+                            cin.clear(); // czyszczenie bledu w strumieniu wejscia
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Usuniecie niepoprawnej linii wejscia
+                            continue; // petla rozpoczyna sie od nowa
+                        }
 
                         switch (innerChoice) {
                             case 1:
-                                arrayPrinter.print(originalArray, size);
+                                arrayPrinter.print(originalArray, size); // wypisanie zawartosci tablicy przed sortowaniem
                                 break;
                             case 2:
+                                // posortowanie i zapisanie wynikow
                                 performSortingAndSaveResults(insertionSorter, &InsertionSort<T>::sort, originalArray, size, repetition, type, arrangement, filename);                              
                                 break;
                             case 3:
@@ -253,24 +272,23 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
                                 exitProgram = true;
                                 return;
                             default:
-                                std::cout << "nieprawidlowa opcja - wybierz opcje od 1 do 5" << std::endl;
+                                cout << "nieprawidlowa opcja - wybierz opcje od 1 do 5" << endl;
                                 break;
                         }
                     } while (!innerLoop);
                     break;
                 case 2:
                     do {
-                        std::ifstream inputFile(filename.c_str());
+                        ifstream inputFile(filename.c_str());
                         if (!inputFile.is_open()) {
-                            std::cerr << "Nie mozna otworzyc pliku: " << filename << std::endl;
+                            cout << "nie mozna otworzyc pliku: " << filename << endl;
                             return;
                         }
 
-                        inputFile >> size; // Wczytanie liczby zmiennoprzecinkowej jako rozmiaru tablicy
+                        inputFile >> size;
                         delete[] originalArray;
                         originalArray = new T[size];
 
-                        // Wczytanie liczb zmiennoprzecinkowych do tablicy
                         for (int i = 0; i < size; ++i) {
                             T value;
                             inputFile >> value;
@@ -283,15 +301,21 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
                             dynamicArray[i] = originalArray[i];
                         }
 
+                        cout << "\n\nMENU - sortowanie przez kopcowanie" << endl;
+                        cout << "1. wypisz tablice przed sortowaniem" << endl;
+                        cout << "2. posortuj" << endl;
+                        cout << "3. cofnij do menu glownego" << endl;
+                        cout << "4. wybierz ponownie dane wejsciowe" << endl;
+                        cout << "5. wyjscie z programu" << endl;
+                        cout << "wybierz opcje (1-5): ";
 
-                        std::cout << "\n\nMENU - sortowanie przez kopcowanie" << std::endl;
-                        std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
-                        std::cout << "2. posortuj" << std::endl;
-                        std::cout << "3. cofnij do menu glownego" << std::endl;
-                        std::cout << "4. wybierz ponownie dane wejsciowe" << std::endl;
-                        std::cout << "5. wyjscie z programu" << std::endl;
-                        std::cout << "wybierz opcje (1-5): ";
-                        std::cin >> innerChoice;
+                        // sprawdzanie czy wprowadzona wartosc jest liczba
+                        if (!(cin >> innerChoice)) {
+                            cout << "niepoprawna liczba - wprowadz ponownie\n"; // komunikat o zlym wyborze
+                            cin.clear(); // czyszczenie bledu w strumieniu wejscia
+                            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // usuniecie niepoprawnej linii wejscia
+                            continue; // petla rozpoczyna sie od nowa
+                        }
 
                         switch (innerChoice) {
                             case 1:
@@ -304,22 +328,22 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
                                 innerLoop = true;
                                 break;
                             case 4:
-                                delete[] dynamicArray; // Zwolnienie pamięci
+                                delete[] dynamicArray;
                                 return;
                             case 5:
                                 exitProgram = true;
                                 return;
                             default:
-                                std::cout << "nieprawidlowa opcja - wybierz opcje od 1 do 5" << std::endl;
+                                cout << "nieprawidlowa opcja - wybierz opcje od 1 do 5" << endl;
                                 break;
                         }
                     } while (!innerLoop);
                     break;
                 case 3:
                     do {
-                        std::ifstream inputFile(filename.c_str());
+                        ifstream inputFile(filename.c_str());
                         if (!inputFile.is_open()) {
-                            std::cerr << "Nie mozna otworzyc pliku: " << filename << std::endl;
+                            cout << "nie mozna otworzyc pliku: " << filename << endl;
                             return;
                         }
 
@@ -337,15 +361,22 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
                         }
 
 
-                        std::cout << "\n\nMENU - sortowanie Shella" << std::endl;
-                        std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
-                        std::cout << "2. posortuj (Knuth)" << std::endl;
-                        std::cout << "3. posortuj (Sedgewick)" << std::endl;
-                        std::cout << "4. cofnij do menu glownego" << std::endl;
-                        std::cout << "5. wybierz ponownie dane wejsciowe" << std::endl;
-                        std::cout << "6. wyjscie z programu" << std::endl;
-                        std::cout << "wybierz opcje (1-6): ";
-                        std::cin >> innerChoice;
+                        cout << "\n\nMENU - sortowanie Shella" << endl;
+                        cout << "1. wypisz tablice przed sortowaniem" << endl;
+                        cout << "2. posortuj (Knuth)" << endl;
+                        cout << "3. posortuj (Sedgewick)" << endl;
+                        cout << "4. cofnij do menu glownego" << endl;
+                        cout << "5. wybierz ponownie dane wejsciowe" << endl;
+                        cout << "6. wyjscie z programu" << endl;
+                        cout << "wybierz opcje (1-6): ";
+
+                        // sprawdzanie czy wprowadzona wartosc jest liczba
+                        if (!(cin >> innerChoice)) {
+                            cout << "niepoprawna liczba - wprowadz ponownie\n"; // komunikat o zlym wyborze
+                            cin.clear(); // czyszczenie bledu w strumieniu wejscia
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // usuniecie niepoprawnej linii wejscia
+                            continue; // petla rozpoczyna się od nowa
+                        }
 
                         switch (innerChoice) {
                             case 1:
@@ -361,13 +392,13 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
                                 innerLoop = true;
                                 break;
                             case 5:
-                                delete[] dynamicArray; // Zwolnienie pamięci
+                                delete[] dynamicArray;
                                 return;
                             case 6:
                                 exitProgram = true;
                                 return;
                             default:
-                                std::cout << "nieprawidlowa opcja - wybierz opcje od 1 do 6" << std::endl;
+                                cout << "nieprawidlowa opcja - wybierz opcje od 1 do 6" << endl;
                                 break;
                         }
                     } while (!innerLoop);
@@ -376,7 +407,7 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
                     do {
                         std::ifstream inputFile(filename.c_str());
                         if (!inputFile.is_open()) {
-                            std::cerr << "Nie mozna otworzyc pliku: " << filename << std::endl;
+                            cout << "nie mozna otworzyc pliku: " << filename << endl;
                             return;
                         }
 
@@ -394,17 +425,24 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
                         }
 
 
-                        std::cout << "\n\nMENU - sortowanie szybkie" << std::endl;
-                        std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
-                        std::cout << "2. posortuj (skrajny lewy pivot)" << std::endl;
-                        std::cout << "3. posortuj (skrajny prawy pivot)" << std::endl;
-                        std::cout << "4. posortuj (srodkowy pivot)" << std::endl;
-                        std::cout << "5. posortuj (losowy pivot)" << std::endl;
-                        std::cout << "6. cofnij do menu glownego" << std::endl;
-                        std::cout << "7. wybierz ponownie dane wejsciowe" << std::endl;
-                        std::cout << "8. wyjscie z programu" << std::endl;
-                        std::cout << "wybierz opcje (1-8): ";
-                        std::cin >> innerChoice;
+                        cout << "\n\nMENU - sortowanie szybkie" << endl;
+                        cout << "1. wypisz tablice przed sortowaniem" << endl;
+                        cout << "2. posortuj (skrajny lewy pivot)" << endl;
+                        cout << "3. posortuj (skrajny prawy pivot)" << endl;
+                        cout << "4. posortuj (srodkowy pivot)" << endl;
+                        cout << "5. posortuj (losowy pivot)" << endl;
+                        cout << "6. cofnij do menu glownego" << endl;
+                        cout << "7. wybierz ponownie dane wejsciowe" << endl;
+                        cout << "8. wyjscie z programu" << endl;
+                        cout << "wybierz opcje (1-8): ";
+
+                        // sprawdzanie czy wprowadzona wartosc jest liczba
+                        if (!(cin >> innerChoice)) {
+                            cout << "niepoprawna liczba - wprowadz ponownie\n"; // komunikat o zlym wyborze
+                            cin.clear(); // czyszczenie bledu w strumieniu wejscia
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // usuniecie niepoprawnej linii wejscia
+                            continue; // petla rozpoczyna sie od nowa
+                        }
 
                         switch (innerChoice) {
                             case 1:
@@ -430,13 +468,13 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
                                 innerLoop = true;
                                 break;
                             case 7:
-                                delete[] dynamicArray; // Zwolnienie pamięci
+                                delete[] dynamicArray;
                                 return;
                             case 8:
                                 exitProgram = true;
                                 return;
                             default:
-                                std::cout << "nieprawidlowa opcja - wybierz opcje od 1 do 8" << std::endl;
+                                cout << "nieprawidlowa opcja - wybierz opcje od 1 do 8" << endl;
                                 break;
                         }
                     } while (!innerLoop);
@@ -447,13 +485,11 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
                     exitProgram = true;
                     return;
                 default:
-                    std::cout << "nieprawidlowa opcja - wybierz opcje od 1 do 6" << std::endl;
+                    cout << "nieprawidlowa opcja - wybierz opcje od 1 do 6" << endl;
                     break;
             }
         } while (choice != 6);
     }
-
-    
 };
 
 #endif

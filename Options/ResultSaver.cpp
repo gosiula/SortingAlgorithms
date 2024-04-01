@@ -5,32 +5,35 @@
 #ifndef RESULT_SAVER_CPP
 #define RESULT_SAVER_CPP
 
+using namespace std;
+
 class ResultSaver {
 private:
-    std::string originalFilename;
+    string originalFilename;
 
 public:
     ResultSaver() = default;
 
-    ResultSaver(const std::string& originalFilename) : originalFilename(originalFilename) {}
+    ResultSaver(const string& originalFilename) : originalFilename(originalFilename) {}
 
-    void setOriginalFilename(const std::string& filename) {
+    void setOriginalFilename(const string& filename) {
         originalFilename = filename;
     }
 
-    void saveResults(int type, int size, int repetition, double averageTime, const std::string& arrangement, const std::string& filename) {      
-        // Tworzenie nazwy pliku wynikowego z oryginalną nazwą pliku
-        std::string result = "wyniki_";
-        std::string resultFilename = result + filename;
+    // funkcja ktora zapisuje wyniki do nowego pliku
+    void saveResults(int type, int size, int repetition, double averageTime, const string& arrangement, const string& filename) {      
+        // tworzenie nazwy pliku wynikowego z oryginalna nazwa pliku
+        string result = "wyniki_";
+        string resultFilename = result + filename;
 
-        std::ofstream outputFile(resultFilename.c_str()); // Użyj c_str() aby uzyskać const char*
+        ofstream outputFile(resultFilename.c_str()); // otwarcie pliku 
 
         if (!outputFile.is_open()) {
-            std::cerr << "Nie można otworzyć pliku: " << resultFilename << std::endl;
+            cout << "Nie można otworzyć pliku: " << resultFilename << endl;
             return;
         }
 
-        std::string numberType;
+        string numberType;
         if (type == 1) {
             numberType = "int";
         } else if (type == 2) {
@@ -39,13 +42,14 @@ public:
             numberType = "double";
         }
 
-        outputFile << "Typ danych: " << numberType << std::endl;
-        outputFile << "Ilosc liczb: " << size << std::endl;
-        outputFile << "Ilosc powtorzen: " << repetition << std::endl;
-        outputFile << "Poziom losowosci liczb: " << arrangement << std::endl;
-        outputFile << "Sredni czas sortowania: " << averageTime << " ms" << std::endl;
+        // dane do wpisania do pliku
+        outputFile << "Typ danych: " << numberType << endl;
+        outputFile << "Ilosc liczb: " << size << endl;
+        outputFile << "Ilosc powtorzen: " << repetition << endl;
+        outputFile << "Poziom losowosci liczb: " << arrangement << endl;
+        outputFile << "Sredni czas sortowania: " << averageTime << " ms" << endl;
 
-        outputFile.close();
+        outputFile.close(); // zamkniecie pliku
     }
 };
 
