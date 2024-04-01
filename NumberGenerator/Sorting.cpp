@@ -5,6 +5,7 @@
 #include <ctime>
 #include <string>
 #include <fstream>
+#include <iomanip>
 #include "Sort/InsertionSort.cpp"
 #include "Sort/HeapSort.cpp"
 #include "Sort/ShellSort.cpp"
@@ -13,6 +14,8 @@
 #include "Options/SortingChecker.cpp"
 #include "Options/ResultSaver.cpp"
 #include "NumberGenerator/DataInput.cpp"
+
+using namespace std;
 
 template<typename T>
 class Sorting {
@@ -26,6 +29,11 @@ private:
     std::string filename;
     DataInput<T> dataInput;
     ResultSaver resultSaver;
+    int repetition;  // Nowo dodane pole repetition
+    T* originalArray;  // Nowo dodane pole originalArray
+    int size;  // Nowo dodane pole size
+    int type;
+    string arrangement;
 
 public:
     void setInputFilename(const std::string& filename) {
@@ -35,6 +43,127 @@ public:
     std::string getInputFilename() const {
         return filename;
     }
+
+    template<typename SorterType, typename SortFunction>
+    void performSortingAndSaveResults(SorterType& sorter, SortFunction sortFunction, T* originalArray, int size, int repetition, int type, const std::string& arrangement, const std::string& filename) {
+        clock_t start, end;
+        double elapsedTimeMillis, averageTime, totalTime = 0.0;
+
+        if (repetition == 1) {
+            // Usunięcie zawartości posortowanej tablicy
+            T* dynamicArray = new T[size];
+            for (int j = 0; j < size; ++j) {
+                dynamicArray[j] = originalArray[j];
+            }
+
+            start = clock();
+            (sorter.*sortFunction)(dynamicArray, size);
+            end = clock();
+
+            std::cout << "\n\ntablica zostala posortowana przez InsertionSort" << std::endl;
+            arrayPrinter.print(dynamicArray, size);
+            if (sortingChecker.isSorted(dynamicArray, size)) {
+                std::cout << "liczby poprawnie posortowane" << std::endl;
+            } else {
+                std::cout << "liczby niepoprawnie posortowane" << std::endl;
+            }
+
+            averageTime = (end - start) * 1000.0 / CLOCKS_PER_SEC;
+            std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << averageTime << " ms" << std::endl;
+
+            delete[] dynamicArray; // Zwolnienie pamięci
+        } else {
+            for(int i = 1; i <= repetition; ++i) {
+                // Czyszczenie zawartości posortowanej tablicy
+                T* dynamicArray = new T[size];
+                for (int j = 0; j < size; ++j) {
+                    dynamicArray[j] = originalArray[j];
+                }
+
+                start = clock();
+                (sorter.*sortFunction)(dynamicArray, size);
+                end = clock();
+
+                if (sortingChecker.isSorted(dynamicArray, size)) {
+                    std::cout << i << ". liczby poprawnie posortowane : ";
+                } else {
+                    std::cout << i << ". liczby niepoprawnie posortowane";
+                }
+
+                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC;
+                totalTime += elapsedTimeMillis;
+                std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << elapsedTimeMillis << " ms" << std::endl;
+
+                delete[] dynamicArray; // Zwolnienie pamięci
+            }
+            averageTime = totalTime / repetition;
+            std::cout << "sredni czas sortowania: " << averageTime << " ms dla ilosc powtorzen " << repetition << std::endl;
+        }
+
+        // Zapisz wyniki do pliku
+        resultSaver.saveResults(type, size, repetition, averageTime, arrangement, filename);
+    }
+
+    template<typename SorterType, typename SortFunction>
+    void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, SortFunction sortFunction, T* originalArray, int size, int repetition, int type, const std::string& arrangement, const std::string& filename) {
+        clock_t start, end;
+        double elapsedTimeMillis, averageTime, totalTime = 0.0;
+
+        if (repetition == 1) {
+            // Usunięcie zawartości posortowanej tablicy
+            T* dynamicArray = new T[size];
+            for (int j = 0; j < size; ++j) {
+                dynamicArray[j] = originalArray[j];
+            }
+
+            start = clock();
+            (sorter.*sortFunction)(dynamicArray, size, pivot);
+            end = clock();
+
+            std::cout << "\n\ntablica zostala posortowana przez InsertionSort" << std::endl;
+            arrayPrinter.print(dynamicArray, size);
+            if (sortingChecker.isSorted(dynamicArray, size)) {
+                std::cout << "liczby poprawnie posortowane" << std::endl;
+            } else {
+                std::cout << "liczby niepoprawnie posortowane" << std::endl;
+            }
+
+            averageTime = (end - start) * 1000.0 / CLOCKS_PER_SEC;
+            std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << averageTime << " ms" << std::endl;
+
+            delete[] dynamicArray; // Zwolnienie pamięci
+        } else {
+            for(int i = 1; i <= repetition; ++i) {
+                // Czyszczenie zawartości posortowanej tablicy
+                T* dynamicArray = new T[size];
+                for (int j = 0; j < size; ++j) {
+                    dynamicArray[j] = originalArray[j];
+                }
+
+                start = clock();
+                (sorter.*sortFunction)(dynamicArray, size, pivot);
+                end = clock();
+
+                if (sortingChecker.isSorted(dynamicArray, size)) {
+                    std::cout << i << ". liczby poprawnie posortowane : ";
+                } else {
+                    std::cout << i << ". liczby niepoprawnie posortowane";
+                }
+
+                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC;
+                totalTime += elapsedTimeMillis;
+                std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << elapsedTimeMillis << " ms" << std::endl;
+
+                delete[] dynamicArray; // Zwolnienie pamięci
+            }
+            averageTime = totalTime / repetition;
+            std::cout << "sredni czas sortowania: " << averageTime << " ms dla ilosc powtorzen " << repetition << std::endl;
+        }
+
+        // Zapisz wyniki do pliku
+        resultSaver.saveResults(type, size, repetition, averageTime, arrangement, filename);
+    }
+
 
     void performSorting(T* originalArray, int size, bool& exitProgram, int repetition, int type, const std::string& arrangement) {
         clock_t start, end;
@@ -88,7 +217,7 @@ public:
 
                         std::cout << "\n\nMENU - sortowanie przez wstawianie" << std::endl;
                         std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
-                        std::cout << "2. wypisz tablice po sortowaniu" << std::endl;
+                        std::cout << "2. posortuj" << std::endl;
                         std::cout << "3. cofnij do menu glownego" << std::endl;
                         std::cout << "4. wybierz ponownie dane wejsciowe" << std::endl;
                         std::cout << "5. wyjscie z programu" << std::endl;
@@ -102,54 +231,7 @@ public:
                                 arrayPrinter.print(originalArray, size);
                                 break;
                             case 2:
-                                if(repetition == 1) {
-                                    start = clock();
-                                    insertionSorter.sort(dynamicArray, size);
-                                    end = clock();
-
-                                    // Usunięcie zawartości posortowanej tablicy
-                                    delete[] dynamicArray;
-                                    dynamicArray = new T[size];
-                                    for (int j = 0; j < size; ++j) {
-                                        dynamicArray[j] = originalArray[j];
-                                    }
-
-                                    std::cout << "\n\ntablica zostala posortowana przez InsertionSort" << std::endl;
-                                    arrayPrinter.print(dynamicArray, size);
-                                    if(sortingChecker.isSorted(dynamicArray, size) == true) std::cout << "liczby poprawnie posortowane" << std::endl;
-                                    else std::cout << "liczby niepoprawnie posortowane" << std::endl;
-
-                                    averageTime = (end - start) * 1000.0 / CLOCKS_PER_SEC;
-                                    std::cout << "czas sortowania: " << averageTime << " ms" << std::endl;
-                                } else {
-                                    for(int i = 1; i <= repetition; i++) {
-                                        // Czyszczenie zawartości posortowanej tablicy
-                                        delete[] dynamicArray;
-                                        dynamicArray = new T[size];
-                                        for (int j = 0; j < size; ++j) {
-                                            dynamicArray[j] = originalArray[j];
-                                        }
-
-                                        start = clock();
-                                        insertionSorter.sort(dynamicArray, size);
-                                        end = clock();
-
-                                        if(sortingChecker.isSorted(dynamicArray, size) == true) std::cout << i << ". liczby poprawnie posortowane : ";
-                                        else std::cout << i << ". liczby niepoprawnie posortowane";
-
-                                        elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC;
-                                        totalTime += elapsedTimeMillis;
-                                        std::cout << elapsedTimeMillis << " ms " << std::endl;                                         
-                                    }
-                                    averageTime = totalTime / repetition;
-                                    std::cout << "sredni czas sortowania: " << averageTime << " ms dla ilosc powtorzen " << repetition << std::endl;
-                                }
-
-                                // tutaj chce zapisywac dane do pliku nazwa_pliku_wejsciowego_wyniki.txt
-                                // dane do zapisu to: typ danych(type), ilosc liczb (size), ilosc powtorzen (repetition),
-                                // sredni czas (averageTime), 
-                                resultSaver.saveResults(type, size, repetition, averageTime, arrangement, filename);
-                              
+                                performSortingAndSaveResults(insertionSorter, &InsertionSort<T>::sort, originalArray, size, repetition, type, arrangement, filename);                              
                                 break;
                             case 3:
                                 innerLoop = true;
@@ -194,7 +276,7 @@ public:
 
                         std::cout << "\n\nMENU - sortowanie przez kopcowanie" << std::endl;
                         std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
-                        std::cout << "2. wypisz tablice po sortowaniu" << std::endl;
+                        std::cout << "2. posortuj" << std::endl;
                         std::cout << "3. cofnij do menu glownego" << std::endl;
                         std::cout << "4. wybierz ponownie dane wejsciowe" << std::endl;
                         std::cout << "5. wyjscie z programu" << std::endl;
@@ -206,17 +288,7 @@ public:
                                 arrayPrinter.print(originalArray, size);
                                 break;
                             case 2:
-                                start = clock(); // Początek pomiaru czasu
-                                heapSorter.sort(dynamicArray, size);
-                                end = clock(); // Koniec pomiaru czasu
-
-                                std::cout << "\n\ntablica zostala posortowana przez HeapSort" << std::endl;
-                                arrayPrinter.print(dynamicArray, size);
-                                if(sortingChecker.isSorted(dynamicArray, size) == true) std::cout << "liczby poprawnie posortowane" << std::endl;
-                                else std::cout << "liczby niepoprawnie posortowane" << std::endl;
-
-                                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC; // Obliczenie czasu trwania sortowania w milisekundach
-                                std::cout << "czas sortowania: " << elapsedTimeMillis << " ms" << std::endl; // Wypisanie czasu w milisekundach
+                                performSortingAndSaveResults(heapSorter, &HeapSort<T>::sort, dynamicArray, size, repetition, type, arrangement, filename);
                                 break;
                             case 3:
                                 innerLoop = true;
@@ -257,8 +329,8 @@ public:
 
                         std::cout << "\n\nMENU - sortowanie Shella" << std::endl;
                         std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
-                        std::cout << "2. wypisz tablice po sortowaniu (Knuth)" << std::endl;
-                        std::cout << "3. wypisz tablice po sortowaniu (Sedgewick)" << std::endl;
+                        std::cout << "2. posortuj (Knuth)" << std::endl;
+                        std::cout << "3. posortuj (Sedgewick)" << std::endl;
                         std::cout << "4. cofnij do menu glownego" << std::endl;
                         std::cout << "5. wybierz ponownie dane wejsciowe" << std::endl;
                         std::cout << "6. wyjscie z programu" << std::endl;
@@ -270,30 +342,10 @@ public:
                                 arrayPrinter.print(originalArray, size);
                                 break;
                             case 2:
-                                start = clock(); // Początek pomiaru czasu
-                                shellSorter.sortWithKnuth(dynamicArray, size);
-                                end = clock(); // Koniec pomiaru czasu
-                                
-                                std::cout << "\n\ntablica zostala posortowana przez ShellSort (Knuth)" << std::endl;
-                                arrayPrinter.print(dynamicArray, size);
-                                if(sortingChecker.isSorted(dynamicArray, size) == true) std::cout << "liczby poprawnie posortowane" << std::endl;
-                                else std::cout << "liczby niepoprawnie posortowane" << std::endl;
-
-                                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC; // Obliczenie czasu trwania sortowania w milisekundach
-                                std::cout << "czas sortowania: " << elapsedTimeMillis << " ms" << std::endl; // Wypisanie czasu w milisekundach
+                                performSortingAndSaveResults(shellSorter, &ShellSort<T>::sortWithKnuth, dynamicArray, size, repetition, type, arrangement, filename);
                                 break;
                             case 3:
-                                start = clock(); // Początek pomiaru czasu
-                                shellSorter.sortWithSedgewick(dynamicArray, size);
-                                end = clock(); // Koniec pomiaru czasu
-                                
-                                std::cout << "\n\ntablica zostala posortowana przez ShellSort (Sedgewick)" << std::endl;
-                                arrayPrinter.print(dynamicArray, size);
-                                if(sortingChecker.isSorted(dynamicArray, size) == true) std::cout << "liczby poprawnie posortowane" << std::endl;
-                                else std::cout << "liczby niepoprawnie posortowane" << std::endl;
-
-                                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC; // Obliczenie czasu trwania sortowania w milisekundach
-                                std::cout << "czas sortowania: " << elapsedTimeMillis << " ms" << std::endl; // Wypisanie czasu w milisekundach
+                                performSortingAndSaveResults(shellSorter, &ShellSort<T>::sortWithSedgewick, dynamicArray, size, repetition, type, arrangement, filename);
                                 break;
                             case 4:
                                 innerLoop = true;
@@ -334,10 +386,10 @@ public:
 
                         std::cout << "\n\nMENU - sortowanie szybkie" << std::endl;
                         std::cout << "1. wypisz tablice przed sortowaniem" << std::endl;
-                        std::cout << "2. sortowanie szybkie (skrajny lewy pivot)" << std::endl;
-                        std::cout << "3. sortowanie szybkie (skrajny prawy pivot)" << std::endl;
-                        std::cout << "4. sortowanie szybkie (srodkowy pivot)" << std::endl;
-                        std::cout << "5. sortowanie szybkie (losowy pivot)" << std::endl;
+                        std::cout << "2. posortuj (skrajny lewy pivot)" << std::endl;
+                        std::cout << "3. posortuj (skrajny prawy pivot)" << std::endl;
+                        std::cout << "4. posortuj (srodkowy pivot)" << std::endl;
+                        std::cout << "5. posortuj (losowy pivot)" << std::endl;
                         std::cout << "6. cofnij do menu glownego" << std::endl;
                         std::cout << "7. wybierz ponownie dane wejsciowe" << std::endl;
                         std::cout << "8. wyjscie z programu" << std::endl;
@@ -349,56 +401,20 @@ public:
                                 arrayPrinter.print(originalArray, size);
                                 break;
                             case 2:
-                                start = clock(); // Początek pomiaru czasu
-                                quickSorter.sort(dynamicArray, size, 1); // Skrajny lewy pivot
-                                end = clock(); // Koniec pomiaru czasu
-                                
-                                std::cout << "\n\ntablica zostala posortowana przez QuickSort (skrajny lewy pivot)" << std::endl;
-                                arrayPrinter.print(dynamicArray, size);
-                                if(sortingChecker.isSorted(dynamicArray, size) == true) std::cout << "liczby poprawnie posortowane" << std::endl;
-                                else std::cout << "liczby niepoprawnie posortowane" << std::endl;
-
-                                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC; // Obliczenie czasu trwania sortowania w milisekundach
-                                std::cout << "czas sortowania: " << elapsedTimeMillis << " ms" << std::endl; // Wypisanie czasu w milisekundach
+                                // skrajny lewy
+                                performSortingAndSaveResultsForQuickSort(1, quickSorter, &QuickSort<T>::sort, dynamicArray, size, repetition, type, arrangement, filename);
                                 break;
                             case 3:
-                                start = clock(); // Początek pomiaru czasu
-                                quickSorter.sort(dynamicArray, size, 2); // Skrajny prawy pivot
-                                end = clock(); // Koniec pomiaru czasu
-                                
-                                std::cout << "\n\ntablica zostala posortowana przez QuickSort (skrajny prawy pivot)" << std::endl;
-                                arrayPrinter.print(dynamicArray, size);
-                                if(sortingChecker.isSorted(dynamicArray, size) == true) std::cout << "liczby poprawnie posortowane" << std::endl;
-                                else std::cout << "liczby niepoprawnie posortowane" << std::endl;
-
-                                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC; // Obliczenie czasu trwania sortowania w milisekundach
-                                std::cout << "czas sortowania: " << elapsedTimeMillis << " ms" << std::endl; // Wypisanie czasu w milisekundach
+                                // skrajny prawy
+                                performSortingAndSaveResultsForQuickSort(2, quickSorter, &QuickSort<T>::sort, dynamicArray, size, repetition, type, arrangement, filename);
                                 break;
                             case 4:
-                                start = clock(); // Początek pomiaru czasu
-                                quickSorter.sort(dynamicArray, size, 3); // Środkowy pivot
-                                end = clock(); // Koniec pomiaru czasu
-                                
-                                std::cout << "\n\ntablica zostala posortowana przez QuickSort (srodkowy pivot)" << std::endl;
-                                arrayPrinter.print(dynamicArray, size);
-                                if(sortingChecker.isSorted(dynamicArray, size) == true) std::cout << "liczby poprawnie posortowane" << std::endl;
-                                else std::cout << "liczby niepoprawnie posortowane" << std::endl;
-
-                                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC; // Obliczenie czasu trwania sortowania w milisekundach
-                                std::cout << "czas sortowania: " << elapsedTimeMillis << " ms" << std::endl; // Wypisanie czasu w milisekundach
+                                // srodkowy 
+                                performSortingAndSaveResultsForQuickSort(3, quickSorter, &QuickSort<T>::sort, dynamicArray, size, repetition, type, arrangement, filename);
                                 break;
                             case 5:
-                                start = clock(); // Początek pomiaru czasu
-                                quickSorter.sort(dynamicArray, size, 4); // Losowy pivot
-                                end = clock(); // Koniec pomiaru czasu
-                                
-                                std::cout << "\n\nTablica zostala posortowana przez QuickSort (losowy pivot)" << std::endl;
-                                arrayPrinter.print(dynamicArray, size);
-                                if(sortingChecker.isSorted(dynamicArray, size) == true) std::cout << "liczby poprawnie posortowane" << std::endl;
-                                else std::cout << "liczby niepoprawnie posortowane" << std::endl;
-
-                                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC; // Obliczenie czasu trwania sortowania w milisekundach
-                                std::cout << "czas sortowania: " << elapsedTimeMillis << " ms" << std::endl; // Wypisanie czasu w milisekundach
+                                // losowy
+                                performSortingAndSaveResultsForQuickSort(4, quickSorter, &QuickSort<T>::sort, dynamicArray, size, repetition, type, arrangement, filename);
                                 break;
                             case 6:
                                 innerLoop = true;
@@ -426,6 +442,8 @@ public:
             }
         } while (choice != 6);
     }
+
+    
 };
 
 #endif
