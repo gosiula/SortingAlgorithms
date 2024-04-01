@@ -1,0 +1,5 @@
+Typ danych: float
+Ilosc liczb: 10000
+Ilosc powtorzen: 100
+Poziom losowosci liczb: liczby losowe
+Sredni czas sortowania: 3.87115 ms

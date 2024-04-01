@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
+#include <windows.h>
 #include "Sort/InsertionSort.cpp"
 #include "Sort/HeapSort.cpp"
 #include "Sort/ShellSort.cpp"
@@ -44,125 +45,134 @@ public:
         return filename;
     }
 
-    template<typename SorterType, typename SortFunction>
-    void performSortingAndSaveResults(SorterType& sorter, SortFunction sortFunction, T* originalArray, int size, int repetition, int type, const std::string& arrangement, const std::string& filename) {
-        clock_t start, end;
-        double elapsedTimeMillis, averageTime, totalTime = 0.0;
+template<typename SorterType, typename SortFunction>
+void performSortingAndSaveResults(SorterType& sorter, SortFunction sortFunction, T* originalArray, int size, int repetition, int type, const std::string& arrangement, const std::string& filename) {
+    LARGE_INTEGER frequency;
+    LARGE_INTEGER start;
+    LARGE_INTEGER end;
 
-        if (repetition == 1) {
-            // Usunięcie zawartości posortowanej tablicy
+    QueryPerformanceFrequency(&frequency);
+
+    double totalTime = 0.0;
+
+    if (repetition == 1) {
+        // Usunięcie zawartości posortowanej tablicy
+        T* dynamicArray = new T[size];
+        for (int j = 0; j < size; ++j) {
+            dynamicArray[j] = originalArray[j];
+        }
+
+        QueryPerformanceCounter(&start);
+        (sorter.*sortFunction)(dynamicArray, size);
+        QueryPerformanceCounter(&end);
+
+        totalTime = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart;
+
+        std::cout << "\n\ntablica zostala posortowana przez InsertionSort" << std::endl;
+        arrayPrinter.print(dynamicArray, size);
+        if (sortingChecker.isSorted(dynamicArray, size)) {
+            std::cout << "liczby poprawnie posortowane" << std::endl;
+        } else {
+            std::cout << "liczby niepoprawnie posortowane" << std::endl;
+        }
+
+        std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << totalTime * 1000.0 << " ms" << std::endl;
+
+        delete[] dynamicArray; // Zwolnienie pamięci
+    } else {
+        for(int i = 1; i <= repetition; ++i) {
+            // Czyszczenie zawartości posortowanej tablicy
             T* dynamicArray = new T[size];
             for (int j = 0; j < size; ++j) {
                 dynamicArray[j] = originalArray[j];
             }
 
-            start = clock();
+            QueryPerformanceCounter(&start);
             (sorter.*sortFunction)(dynamicArray, size);
-            end = clock();
+            QueryPerformanceCounter(&end);
 
-            std::cout << "\n\ntablica zostala posortowana przez InsertionSort" << std::endl;
-            arrayPrinter.print(dynamicArray, size);
+            totalTime += static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart;
+
             if (sortingChecker.isSorted(dynamicArray, size)) {
-                std::cout << "liczby poprawnie posortowane" << std::endl;
+                std::cout << i << ". liczby poprawnie posortowane : ";
             } else {
-                std::cout << "liczby niepoprawnie posortowane" << std::endl;
+                std::cout << i << ". liczby niepoprawnie posortowane";
             }
 
-            averageTime = (end - start) * 1000.0 / CLOCKS_PER_SEC;
-            std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << averageTime << " ms" << std::endl;
+            std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << (totalTime / i) * 1000.0 << " ms" << std::endl;
 
             delete[] dynamicArray; // Zwolnienie pamięci
-        } else {
-            for(int i = 1; i <= repetition; ++i) {
-                // Czyszczenie zawartości posortowanej tablicy
-                T* dynamicArray = new T[size];
-                for (int j = 0; j < size; ++j) {
-                    dynamicArray[j] = originalArray[j];
-                }
-
-                start = clock();
-                (sorter.*sortFunction)(dynamicArray, size);
-                end = clock();
-
-                if (sortingChecker.isSorted(dynamicArray, size)) {
-                    std::cout << i << ". liczby poprawnie posortowane : ";
-                } else {
-                    std::cout << i << ". liczby niepoprawnie posortowane";
-                }
-
-                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC;
-                totalTime += elapsedTimeMillis;
-                std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << elapsedTimeMillis << " ms" << std::endl;
-
-                delete[] dynamicArray; // Zwolnienie pamięci
-            }
-            averageTime = totalTime / repetition;
-            std::cout << "sredni czas sortowania: " << averageTime << " ms dla ilosc powtorzen " << repetition << std::endl;
         }
-
-        // Zapisz wyniki do pliku
-        resultSaver.saveResults(type, size, repetition, averageTime, arrangement, filename);
     }
 
-    template<typename SorterType, typename SortFunction>
-    void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, SortFunction sortFunction, T* originalArray, int size, int repetition, int type, const std::string& arrangement, const std::string& filename) {
-        clock_t start, end;
-        double elapsedTimeMillis, averageTime, totalTime = 0.0;
+    // Zapisz wyniki do pliku
+    resultSaver.saveResults(type, size, repetition, totalTime / repetition * 1000.0, arrangement, filename);
+}
 
-        if (repetition == 1) {
-            // Usunięcie zawartości posortowanej tablicy
+template<typename SorterType, typename SortFunction>
+void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, SortFunction sortFunction, T* originalArray, int size, int repetition, int type, const std::string& arrangement, const std::string& filename) {
+    LARGE_INTEGER frequency;
+    LARGE_INTEGER start;
+    LARGE_INTEGER end;
+
+    QueryPerformanceFrequency(&frequency);
+
+    double totalTime = 0.0;
+
+    if (repetition == 1) {
+        // Usunięcie zawartości posortowanej tablicy
+        T* dynamicArray = new T[size];
+        for (int j = 0; j < size; ++j) {
+            dynamicArray[j] = originalArray[j];
+        }
+
+        QueryPerformanceCounter(&start);
+        (sorter.*sortFunction)(dynamicArray, size, pivot);
+        QueryPerformanceCounter(&end);
+
+        totalTime = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart;
+
+        std::cout << "\n\ntablica zostala posortowana przez InsertionSort" << std::endl;
+        arrayPrinter.print(dynamicArray, size);
+        if (sortingChecker.isSorted(dynamicArray, size)) {
+            std::cout << "liczby poprawnie posortowane" << std::endl;
+        } else {
+            std::cout << "liczby niepoprawnie posortowane" << std::endl;
+        }
+
+        std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << totalTime * 1000.0 << " ms" << std::endl;
+
+        delete[] dynamicArray; // Zwolnienie pamięci
+    } else {
+        for(int i = 1; i <= repetition; ++i) {
+            // Czyszczenie zawartości posortowanej tablicy
             T* dynamicArray = new T[size];
             for (int j = 0; j < size; ++j) {
                 dynamicArray[j] = originalArray[j];
             }
 
-            start = clock();
+            QueryPerformanceCounter(&start);
             (sorter.*sortFunction)(dynamicArray, size, pivot);
-            end = clock();
+            QueryPerformanceCounter(&end);
 
-            std::cout << "\n\ntablica zostala posortowana przez InsertionSort" << std::endl;
-            arrayPrinter.print(dynamicArray, size);
+            totalTime += static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart;
+
             if (sortingChecker.isSorted(dynamicArray, size)) {
-                std::cout << "liczby poprawnie posortowane" << std::endl;
+                std::cout << i << ". liczby poprawnie posortowane : ";
             } else {
-                std::cout << "liczby niepoprawnie posortowane" << std::endl;
+                std::cout << i << ". liczby niepoprawnie posortowane";
             }
 
-            averageTime = (end - start) * 1000.0 / CLOCKS_PER_SEC;
-            std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << averageTime << " ms" << std::endl;
+            std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << (totalTime / i) * 1000.0 << " ms" << std::endl;
 
             delete[] dynamicArray; // Zwolnienie pamięci
-        } else {
-            for(int i = 1; i <= repetition; ++i) {
-                // Czyszczenie zawartości posortowanej tablicy
-                T* dynamicArray = new T[size];
-                for (int j = 0; j < size; ++j) {
-                    dynamicArray[j] = originalArray[j];
-                }
-
-                start = clock();
-                (sorter.*sortFunction)(dynamicArray, size, pivot);
-                end = clock();
-
-                if (sortingChecker.isSorted(dynamicArray, size)) {
-                    std::cout << i << ". liczby poprawnie posortowane : ";
-                } else {
-                    std::cout << i << ". liczby niepoprawnie posortowane";
-                }
-
-                elapsedTimeMillis = (end - start) * 1000.0 / CLOCKS_PER_SEC;
-                totalTime += elapsedTimeMillis;
-                std::cout << "czas sortowania: " << std::fixed << std::setprecision(4) << elapsedTimeMillis << " ms" << std::endl;
-
-                delete[] dynamicArray; // Zwolnienie pamięci
-            }
-            averageTime = totalTime / repetition;
-            std::cout << "sredni czas sortowania: " << averageTime << " ms dla ilosc powtorzen " << repetition << std::endl;
         }
-
-        // Zapisz wyniki do pliku
-        resultSaver.saveResults(type, size, repetition, averageTime, arrangement, filename);
     }
+
+    // Zapisz wyniki do pliku
+    resultSaver.saveResults(type, size, repetition, totalTime / repetition * 1000.0, arrangement, filename);
+}
+
 
 
     void performSorting(T* originalArray, int size, bool& exitProgram, int repetition, int type, const std::string& arrangement) {

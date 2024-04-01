@@ -22,7 +22,6 @@ public:
         // Tworzenie nazwy pliku wynikowego z oryginalną nazwą pliku
         std::string result = "wyniki_";
         std::string resultFilename = result + filename;
-        std::cout << filename;
 
         std::ofstream outputFile(resultFilename.c_str()); // Użyj c_str() aby uzyskać const char*
 
