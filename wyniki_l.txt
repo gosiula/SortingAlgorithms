@@ -1,5 +1,0 @@
-Typ danych: int
-Ilosc liczb: 1000
-Ilosc powtorzen: 100
-Poziom losowosci liczb: liczby posortowane malejaco
-Sredni czas sortowania: 1.31 ms
