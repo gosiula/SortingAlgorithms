@@ -11,8 +11,8 @@
 #include <limits>
 #include <functional> // Dla std::greater
 
-enum{
-    typeInt = 1, 
+enum {
+    typeInt = 1,
     typeFloat = 2,
     typeDouble = 3
 };
@@ -45,20 +45,26 @@ public:
         outputFile << count << std::endl; // Pierwsza linia to liczba elementów
 
         if (type == typeInt) {
-        for (int i = 0; i < count; ++i) {
-            T randomNumber = static_cast<T>((rand() % (10000 - (-10000) + 1)) + (-10000)); // Losuj w zakresie od -10000 do 10000
-            outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
-        }
+            int intMinValue = -10000;
+            int intMaxValue = 10000;
+            for (int i = 0; i < count; ++i) {
+                T randomNumber = static_cast<T>(intMinValue + (rand() % (intMaxValue - intMinValue + 1))); // Losuj w zakresie od -10000 do 10000
+                outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
+            }
         }
         else if (type == typeFloat) {
+            const float floatMinValue = -10000.0f;
+            const float floatMaxValue = 10000.0f;
             for (int i = 0; i < count; ++i) {
-                float randomNumber = static_cast<float>(rand()) / (RAND_MAX / 20000.0f) - 10000.0f; // Losuj w zakresie od -10000.0 do 10000.0
+                float randomNumber = static_cast<float>(floatMinValue + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (floatMaxValue - floatMinValue))));
                 outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
             }
         }
         else if (type == typeDouble) {
+            const double doubleMinValue = -10000.0;
+            const double doubleMaxValue = 10000.0;
             for (int i = 0; i < count; ++i) {
-                double randomNumber = static_cast<double>(rand()) / (RAND_MAX / 20000.0) - 10000.0; // Losuj w zakresie od -10000.0 do 10000.0
+                double randomNumber = doubleMinValue + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (doubleMaxValue - doubleMinValue)));
                 outputFile << randomNumber << std::endl; // Zapisz liczbę do pliku w nowej linii
             }
         }
