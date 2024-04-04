@@ -13,6 +13,7 @@ class DataInput {
 private:
     string filename; // nazwa pliku
     string arrangement; // typ ulozenia danych 
+    int modification; // modyfikacja liczb
 
 public:
     // gettery i settery
@@ -27,13 +28,16 @@ public:
     string getArrangement() const {
         return arrangement;
     }   
+
+    int getModification() {
+        return modification;
+    }
     
     // funkcja do wyboru danych wejsciowych
     void getElements(T*& originalArray, int& size, bool& exitProgram, int type) {
         FileGenerator<T> fileGen; // obiekt typu FileGenerator ktory uzupelnia plik z danymi
 
         int choice; // wybor w menu
-        int innerChoice; // wybor w menu wewnetrznym
 
         do {
             cout << "\nMENU WYBORU DANYCH" << endl;
@@ -141,14 +145,14 @@ public:
                         cout << "Wybierz opcje (1-5): ";
 
                         // sprawdzanie czy wprowadzona wartosc jest liczba
-                        if (!(cin >> innerChoice)) {
+                        if (!(cin >> modification)) {
                             cout << "niepoprawna liczba - wprowadz ponownie\n"; // komunikat o zlym wyborze 
                             cin.clear(); // czyszczenie bledu w strumieniu wejscia
                             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // usuniecie niepoprawnej linii wejscia
                             continue; // petla rozpoczyna sie od nowa
                         }
 
-                        switch (innerChoice) {
+                        switch (modification) {
                             case 1: // brak zmian
                                 arrangement = "liczby losowe";
                                 return;

@@ -15,6 +15,7 @@
 #include "Options/SortingChecker.cpp"
 #include "Options/ResultSaver.cpp"
 #include "NumberGenerator/DataInput.cpp"
+#include "NumberGenerator/FileGenerator.cpp"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ private:
     int size; 
     int type;
     string arrangement;
+    FileGenerator<T> fileGen;
 
 public:
     void setInputFilename(const std::string& filename) {
@@ -86,8 +88,39 @@ void performSortingAndSaveResults(SorterType& sorter, SortFunction sortFunction,
         delete[] dynamicArray; // zwolnienie pamieci
     } else { // dla wiekszej ilosci powtorzen
         for(int i = 1; i <= repetition; ++i) {
+            // jesli ponownie sortujemy to trzeba zmienic dane w pliku
+            if(i > 1) {
+                if(type == 1) {
+                    FileGenerator<int> fileGen(filename);
+                    fileGen.generateAndWriteToFile(size, type);
+                }
+                else if(type == 2) {
+                    FileGenerator<float> fileGen(filename);
+                    fileGen.generateAndWriteToFile(size, type);
+                }
+                else if(type == 3) {
+                    FileGenerator<double> fileGen(filename);
+                    fileGen.generateAndWriteToFile(size, type);
+                }
+            }
+
+            // modyfikacja liczb w pliku
+            if(arrangement == "liczby posortowane malejaco") {
+                fileGen.sortDescending(filename);
+            }
+            else if(arrangement == "liczby posortowane rosnaco") {
+                fileGen.sortAscendingAll(filename);
+            }
+            else if(arrangement == "liczby posortowane rosnaco w 66%") {
+                fileGen.sortAscendingWithPercentage(66, filename);
+            }
+            else if(arrangement == "liczby posortowane rosnaco w 33%") {
+                fileGen.sortAscendingWithPercentage(33, filename);
+            }
+
             // czyszczenie zawartosci posortowanej tablicy
             T* dynamicArray = new T[size];
+            // uzupelnianie tablicy
             for (int j = 0; j < size; ++j) {
                 dynamicArray[j] = originalArray[j];
             }
@@ -152,6 +185,36 @@ void performSortingAndSaveResultsForQuickSort(int pivot, SorterType& sorter, Sor
         delete[] dynamicArray;
     } else {
         for(int i = 1; i <= repetition; ++i) {
+            // jesli ponownie sortujemy to trzeba zmienic dane w pliku
+            if(i > 1) {
+                if(type == 1) {
+                    FileGenerator<int> fileGen(filename);
+                    fileGen.generateAndWriteToFile(size, type);
+                }
+                else if(type == 2) {
+                    FileGenerator<float> fileGen(filename);
+                    fileGen.generateAndWriteToFile(size, type);
+                }
+                else if(type == 3) {
+                    FileGenerator<double> fileGen(filename);
+                    fileGen.generateAndWriteToFile(size, type);
+                }
+            }
+
+            // modyfikacja liczb w pliku
+            if(arrangement == "liczby posortowane malejaco") {
+                fileGen.sortDescending(filename);
+            }
+            else if(arrangement == "liczby posortowane rosnaco") {
+                fileGen.sortAscendingAll(filename);
+            }
+            else if(arrangement == "liczby posortowane rosnaco w 66%") {
+                fileGen.sortAscendingWithPercentage(66, filename);
+            }
+            else if(arrangement == "liczby posortowane rosnaco w 33%") {
+                fileGen.sortAscendingWithPercentage(33, filename);
+            }
+
             T* dynamicArray = new T[size];
             for (int j = 0; j < size; ++j) {
                 dynamicArray[j] = originalArray[j];
